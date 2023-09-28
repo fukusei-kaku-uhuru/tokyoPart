@@ -1,0 +1,34 @@
+<template>
+    <template if:true={isDisplay}>
+        <div class="slds-align_absolute-center">
+            <template if:true={isIppan}>
+                <lightning-flow
+                    flow-api-name='JukyuJiyuShometsuTodoke'
+                    flow-input-variables={inputVariables}
+                    onstatuschange={handleStatusChange}
+                >
+                </lightning-flow>
+            </template>
+            <template if:true={isDV}>
+                <lightning-flow
+                    flow-api-name='DV_JukyuJiyuShometsuTodoke'
+                    flow-input-variables={inputVariables}
+                    onstatuschange={handleStatusChange}
+                >
+                </lightning-flow>
+            </template>
+        </div>
+    </template>
+    <div class="slds-text-align_center">
+        <template if:false={isDisplay}>
+            更新が完了しました。<br /><br />
+        </template>
+        <div class="slds-col slds-large-size_1-of-1 ">
+            <lightning-button
+                variant="brand-outline"
+                label="戻る"
+                onclick={goBack}
+            ></lightning-button>
+        </div>
+    </div>
+</template>

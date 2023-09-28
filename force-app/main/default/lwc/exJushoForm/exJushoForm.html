@@ -1,0 +1,61 @@
+<template>
+	<template if:false={isSiteModeDv}>
+		<template lwc:if={yubinBangoDisabled}>
+			<lightning-input
+				type="text"
+				label={yubinBangoLabel}
+				value={yubinBango}
+				disabled
+				required
+			></lightning-input>
+		</template>
+		<template lwc:else>
+			<lightning-layout multiple-rows="true">
+				<lightning-layout-item size="12">
+					<label class="slds-form-element__label">
+						<span class="ex-text-color_destructive">* </span>{yubinBangoLabel}
+					</label>
+				</lightning-layout-item>
+				<lightning-layout-item size="12">
+					<p>郵便番号は半角数字で入力してください</p>
+				</lightning-layout-item>
+				<lightning-layout-item size="6" class="slds-p-right_xx-small">
+					<lightning-input
+						type="text"
+						value={yubinBango}
+						data-id={yubinBangoDataId}
+						onchange={changeYubinBango}
+						pattern="[0-9\-]*"
+						message-when-pattern-mismatch="郵便番号は、半角数字と半角ハイフンのみ利用可能です。"
+						placeholder="123-4567"
+						max-length="8"
+						required
+						variant="label-hidden"
+					>
+					</lightning-input>
+				</lightning-layout-item>
+				<lightning-layout-item size="6">
+					<button onclick={searchJusho} class="slds-button slds-size_full ex-button_outline">郵便番号から住所入力</button>
+				</lightning-layout-item>
+				<lightning-layout-item size="12">
+					<p class="ex-text-color_neutral">半角ハイフン(-)を入れてご入力ください</p>
+					<p class="ex-text-color_neutral" if:false={isSiteModeSatoya}>海外にお住まいの場合、「000-0000」を入力し「郵便番号から住所入力」ボタンを押してください</p>
+				</lightning-layout-item>
+			</lightning-layout>
+		</template>
+	</template>
+
+	<lightning-input
+		type="text"
+		label={jushoLabel}
+		value={jusho}
+		data-id={jushoDataId}
+		onchange={changeJusho}
+		disabled={jushoDisabled}
+		placeholder={jushoPlaceHolder}
+		max-length="255"
+		required
+	>
+	</lightning-input>
+	<p lwc:if={isSiteModeDv}><strong>住所の入力は区市町村名までとしてください</strong></p>
+</template>

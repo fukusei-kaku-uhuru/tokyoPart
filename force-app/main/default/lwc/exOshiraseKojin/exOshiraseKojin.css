@@ -1,0 +1,33 @@
+.underline{
+    padding-bottom: 5px;
+    font-weight: bold;
+    font-size: 20px;
+    font-family: 'Open Sans', sans-serif;
+    color:#F0845D;
+    position: relative;
+    border-bottom: 3px solid #FFE45E
+  }
+  .underline::before{
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    width: 50%;
+    height: 3px;
+    background: #7FCEF4;
+  }
+  .info::before{
+    content: "i";
+    font-size: 85%;
+    font-family: 'Open Sans', sans-serif;
+    margin-right: 5px;
+    display: inline-block;
+    vertical-align: 2px;
+    width: 1.5em;
+    height: 1.5em;
+    text-align: center;
+    line-height: 1.5;
+    border-radius: 50%;
+    background: #F0845D;
+    color: #FFF;
+    font-weight: bold;
+}

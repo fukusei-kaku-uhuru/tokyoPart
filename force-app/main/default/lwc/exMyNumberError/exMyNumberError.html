@@ -1,0 +1,37 @@
+<template>
+    <lightning-spinner lwc:if={isLoading} size="large"></lightning-spinner>
+    <div lwc:else>
+        <div class="slds-text-align_center">
+            <div class="ex-text-heading_large ex-text-color_brand">公的個人認証を使った本人確認</div>
+
+            <div class="slds-var-m-top_large">
+                <lightning-icon
+                    alternative-text="認証失敗"
+                    icon-name="utility:warning"
+                    size="small"
+                    title="認証失敗"
+                    class="ex-my-number-error-icon"
+                ></lightning-icon>
+            </div>
+
+            <div class="slds-var-m-top_small">
+                <p class="ex-text-heading_medium">本人確認ができませんでした</p>
+            </div>
+
+            <div class="slds-var-m-top_small">
+                <div class="ex-box ex-box_white">
+                    <p class="ex-text-color_brand ex-text_bold">エラー内容</p>
+                    <p class="slds-var-m-top_small">{errorMessage}</p>
+                    <p class="slds-var-m-top_x-small">お手数ですが、再度お試しいただくか、「券面アップロードによる本人確認」の方法で実施ください。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-var-m-top_large">
+            <c-ex-footer
+                has-back
+                onback={goBack}
+            ></c-ex-footer>
+        </div>
+    </div>
+</template>

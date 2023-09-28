@@ -1,0 +1,36 @@
+<template>
+    <template if:false={isError}>
+        <template if:false={isPermissionError}>
+            <template if:false={isEmpty}>
+                <lightning-layout style="display:block">
+                        <div>
+                            <lightning-layout class="slds-color__background_gray-3" style="display:block;">
+                                <div class="slds-p-around_small">
+                                    <div class="slds-text-heading_small" style="font-weight:bold">重複候補表示画面</div>
+                                    <div class="slds-p-top_xx-small" style="width:80%;"><lightning-formatted-text value="氏名（フリガナ）[フリガナがなければ氏名]、生年月日、認定請求の年度が同じ対象児童を重複候補として表示"></lightning-formatted-text></div>
+                                </div>
+                            </lightning-layout>
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped" style="table-layout:fixed;width:100%">
+                                <thead>
+                                    <tr>
+                                        <th><lightning-formatted-text value='対象児童No.'></lightning-formatted-text></th>
+                                        <th><lightning-formatted-text value='請求者カナ'></lightning-formatted-text></th>
+                                        <th><lightning-formatted-text value='申請完了日'></lightning-formatted-text></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={chofukuJidoList} for:item="record">
+                                        <tr key={record.id}>
+                                            <td class="slds-truncate"><lightning-formatted-url value={record.url} label={record.name}></lightning-formatted-url></td>
+                                            <td class="slds-truncate"><lightning-formatted-text value={record.seikyuNameKana}></lightning-formatted-text></td>
+                                            <td class="slds-truncate"><lightning-formatted-date-time value={record.ShinseiKanryoDate}></lightning-formatted-date-time></td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                </lightning-layout>
+            </template>
+        </template>
+    </template>
+</template>

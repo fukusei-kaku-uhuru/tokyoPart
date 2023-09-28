@@ -1,0 +1,76 @@
+<template>
+	<template lwc:if={isLoading}>
+		<lightning-spinner size="large"></lightning-spinner>
+	</template>
+	<template lwc:else>
+
+		<div class="slds-text-align_center ex-text-heading_large ex-text-color_brand slds-m-bottom_medium">
+			提出が必要な書類
+		</div>
+
+		<template lwc:if={isSiteModeSatoya}>
+			<div class="slds-col slds-size_11-of-12">
+				<p>措置決定通知書をアップロードしてください。</p>
+			</div>
+		</template>
+		<template lwc:else>
+			<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+				<div class="slds-col slds-size_11-of-12">
+					<p>あらかじめ準備しておいた必要書類の画像をアップロードしてください。書類に個人番号や保険者番号等の記載がある場合には、マスキング（見えないように処理）が必要になります。</p>
+					<p>マスキングは、写真を撮る前に付箋やメモなどで該当部分を隠すか、撮影・スキャンした写真の該当部分をペイントソフトなどで塗りつぶしてください。</p>
+				</div>
+			</div>
+
+			<div class="slds-var-m-top_x-small slds-grid slds-wrap slds-grid_align-center">
+				<div class="slds-col slds-size_11-of-12">
+					<p>※提出の時点で有効なもの又は原則として発行日から3か月以内のものに限ります。</p>
+				</div>
+			</div>
+		</template>
+
+		<div class="slds-var-m-top_x-small slds-grid slds-wrap slds-grid_align-center" lwc:if={isSiteModeDv}>
+			<div class="slds-col slds-size_11-of-12">
+				<p><strong>※資料に申請者または対象者（子供）の現住所が記載されている場合は、「区市町村名」より後の部分をマスキングしてください。</strong></p>
+				<p>（例：東京都新宿区西新宿２ー８ー１ → 東京都新宿区）</p>
+			</div>
+
+			<div class="slds-col slds-size_11-of-12 slds-var-m-top_x-small">
+				<p>※家族関係確認書類について、健康保険証以外のもの（住民票、医療証）をアップロードされる場合は、以下の「認定請求者が対象者を健康保険上扶養していることがわかる書類」を選択し、該当書類をアップロードしてください。</p>
+				<p>（マスキングのチェックの案内が出ますが、マスキングを行っていない場合でもチェックをいれて、ファイルをアップロードしてください）</p>
+			</div>
+		</div>
+
+		<div class="slds-var-m-top_x-large slds-p-vertical_x-small slds-text-align_center ex-box_white ex-text_bold">
+			<template lwc:if={isSiteModeSatoya}>子供(対象者・認定請求者)</template>
+			<template lwc:else>対象者(子供)</template>
+			：
+			<p class="slds-m-top_xx-small ex-text-heading_large">{taishoJidoData.Shimei}</p>
+		</div>
+
+		<p class="slds-m-top_large">下記の条件に一致するもののみ、アップロード可能です。</p>
+		<p>{fileLimit.extensionMessage}</p>
+		<p>{fileLimit.sizeMessage}</p>
+		<p class="ex-text-color_destructive">下記の提出書類のうち、* がついている書類は必須提出です。</p>
+		<p class="ex-text-color_destructive" lwc:if={isSiteModeIppan}>また、家族関係確認書類が選択可能な場合、いずれか1つを必ず提出してください。</p>
+
+		<c-ex-file-kit
+			options={taishoJidoData.kazokuKakuninOptions}
+			record-id={taishoJidoId}
+			file-list={kazokuShoruiList}
+			un-deletable={taishoJidoData.isDisabled}
+			shorui-setsumei-map={taishoJidoData.ShoruiSetsumeiMap}
+			onfileupload={handleKazokuKakuninUploaded}
+			onfiledelete={handleKazokuShoruiDeleted}
+		></c-ex-file-kit>
+
+		<div class="slds-p-top_large">
+			<c-ex-footer
+				has-back
+				has-next
+				back-label="一覧へ戻る"
+				onback={goList}
+				onnext={goNext}
+			></c-ex-footer>
+		</div>
+	</template>
+</template>

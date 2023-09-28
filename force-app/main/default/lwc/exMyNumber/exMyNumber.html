@@ -1,0 +1,37 @@
+<template>
+	<template lwc:if={isWaiting}>
+		<div class="slds-text-align_center ex-text-heading_large slds-m-top_small">
+			<p>データの取得中</p>
+		</div>
+
+		<div style="height:6rem;position:relative">
+			<div role="status" class="slds-spinner slds-spinner_medium">
+				<span class="slds-assistive-text">Loading</span>
+				<div class="slds-spinner__dot-a"></div>
+				<div class="slds-spinner__dot-b"></div>
+			</div>
+		</div>
+
+		<div class="slds-grid slds-wrap slds-grid_align-center">
+			<div class="slds-col slds-size_11-of-12 slds-text-align_center ex-text-heading_small">
+				<p>ページの再読み込みや</p>
+				<p>戻るボタンを押したりせず、</p>
+				<p><strong>この画面のまま、しばらくお待ち下さい。</strong></p>
+
+				<p class="slds-m-top_small">処理が終わったら、</p>
+				<p>自動的に画面が遷移します。</p>
+
+				<p class="slds-m-top_small">所要時間の目安：1分～1分30秒程度</p>
+
+				<p class="slds-m-top_small">※ 処理に時間がかかる場合がございます。</p>
+			</div>
+		</div>
+
+	</template>
+	<template lwc:else>
+		<iframe class="trustdock-vf-container" height="100%" width="100%"></iframe>
+		<lightning-spinner alternative-text="Loading" size="large" class="spinnerClass" variant="inverse"></lightning-spinner>
+	</template>
+	<lightning-formatted-text value={consoleLog}>
+	</lightning-formatted-text>
+</template>

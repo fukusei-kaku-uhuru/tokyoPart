@@ -1,0 +1,58 @@
+<template>
+    <template if:false={isError}>
+        <template if:false={isPermissionError}>
+            <template if:true={isShinsachu}>
+                <lightning-layout style="display:block; background-color:white;">
+                    <div class="slds-text-heading_medium slds-p-around_small"><lightning-formatted-text value={record.status}></lightning-formatted-text></div>
+                    <template if:true={isShinsaKanryo}>
+                        <lightning-layout style="display:block; background-color:white;">
+                            <div class="slds-text-heading_small slds-p-around_small"><lightning-formatted-text value="審査が完了しました。"></lightning-formatted-text></div>
+                        </lightning-layout>
+                    </template>
+                    <div class="slds-p-around_medium">
+                        <lightning-formatted-text value="審査結果"></lightning-formatted-text>
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th><lightning-formatted-text value='対象'></lightning-formatted-text></th>
+                                    <th><lightning-formatted-text value='状態'></lightning-formatted-text></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="slds-truncate">請求者：<lightning-formatted-text value={seikyusha.shimei}></lightning-formatted-text></td>
+                                    <td class="slds-truncate"><lightning-formatted-text value={seikyusha.shinsaKekka}></lightning-formatted-text></td>
+                                </tr>
+                                <template for:each={taishoJidoList} for:item="item">
+                                    <tr key={item.id}>
+                                        <td class="slds-truncate">対象者：<lightning-formatted-text value={item.shimei}></lightning-formatted-text></td>
+                                        <td class="slds-truncate"><lightning-formatted-text value={item.shinsaKekka}></lightning-formatted-text></td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="slds-p-around_medium slds-text-color_error">
+                        <lightning-formatted-text value={errorMessage}></lightning-formatted-text>
+                    </div>
+                    <div class="slds-p-around_medium slds-grid slds-wrap">
+                        <div class="slds-col"></div>
+                        <div class="slds-col">
+                            <lightning-button label="完了" title="完了" class="slds-m-left_x-small" variant="brand" onclick={shinsaKanryo} disabled={isNotAbleKanryo}></lightning-button>
+                        </div>
+                    </div>
+                </lightning-layout>
+            </template>
+            <template if:false={isShinsachu}>
+                <lightning-layout style="display:block; background-color:white;">
+                    <div class="slds-text-heading_small slds-p-around_small"><lightning-formatted-text value="この申請は現在、審査対象ではありません。"></lightning-formatted-text></div>
+                </lightning-layout>
+            </template>
+        </template>
+        <template lwc:if={isPermissionError}>
+            <lightning-layout style="display:block; background-color:white;">
+                <div class="slds-text-heading_small slds-p-around_small"><lightning-formatted-text value="この申請を審査する権限がありません。"></lightning-formatted-text></div>
+            </lightning-layout>
+        </template>
+    </template>
+</template>

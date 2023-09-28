@@ -1,0 +1,7 @@
+<aura:component implements="forceCommunity:availableForAllPageTypes">
+    <lightning:messageChannel
+        type="FilePreviewLMS__c"
+        onMessage="{!c.handleMessage}"
+        aura:id="messageChannel"
+    />
+</aura:component>

@@ -1,0 +1,60 @@
+<apex:page standardController="TaishoJido__c" standardStylesheets="false" showHeader="false" sidebar="false"
+        applyHtmlTag="false" applyBodyTag="false" docType="html-5.0" recordSetVar="displayed">
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>list button</title>
+<apex:slds />
+</head>
+<body>
+<div class="slds-scope">
+    <div class="slds-p-vertical_x-small">
+        <h1 class="slds-text-heading_small">実行しています...</h1>
+        <p class="slds-text-body_regular">
+            <a href="#" onclick="submitAction();">自動的に開始されない場合はこのリンクをクリックしてください。</a>
+        </p>
+    </div>
+</div>
+<apex:variable var="noCheckbox" value="{!$User.UITheme == 'Theme4t'}" /><!-- モバイルではリストビューでレコードを選択できない。 -->
+<script type="text/javascript" src="/canvas/sdk/js/publisher.js"></script>
+<script type="text/javascript" src="https://s.oproarts.com/js/pd/prime_ff-1.501-tkyp.js"></script>
+<script type="text/javascript">
+function getSelectedIds() {
+    var selectedIds = [''<apex:repeat value="{!selected}" var="record">,'{!JSENCODE(record.Id)}'</apex:repeat>];
+    selectedIds.shift();
+    if (selectedIds.length !== 0) {
+        return selectedIds;
+    }
+    var displayedIds = [''<apex:repeat value="{!displayed}" var="record" rendered="noCheckbox">,'{!JSENCODE(record.Id)}'</apex:repeat>];
+    displayedIds.shift();
+    return displayedIds;
+}
+function submitAction() {
+    var ids = getSelectedIds();
+    if (ids.length === 0) {
+        window.alert('レコードを選択してください。');
+        window.history.back();
+        return;
+    }
+    OPROARTS.PRIME.FF.action(
+      'LA',
+      'sf0234_tokyo',
+      {
+        type:'04_shikyujiyushometsu_tsuchisho',
+        objectIds:ids,
+        zip:true,
+        api:['{!JSENCODE($Organization.Id)}',
+          '{!JSENCODE($User.Id)}',
+          '{!JSENCODE($Api.Session_ID)}',
+          '{!JSENCODE($Api.Partner_Server_URL_550)}'
+        ]
+      }
+    ).submitInNewWindow();
+    history.back();
+}
+OPROARTS.PRIME.FF.addOnLoadHandler(function () { submitAction(); });
+</script>
+</body>
+</html>
+</apex:page>

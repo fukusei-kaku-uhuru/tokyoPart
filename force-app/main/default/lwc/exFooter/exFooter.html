@@ -1,0 +1,36 @@
+<template>
+	<div lwc:if={hasMultipleButtons} class="slds-grid slds-wrap slds-grid_align-space">
+        <div class="slds-col slds-size_10-of-12 slds-large-size_5-of-12 slds-order_2 slds-large-order_1">
+            <button
+                onclick={goBack}
+                title={backLabel}
+                class="slds-button slds-size_full slds-var-p-vertical_small slds-var-p-horizontal_large ex-button_back"
+            >{backLabel}</button>
+        </div>
+        <div class="slds-col slds-size_10-of-12 slds-large-size_5-of-12 slds-order_1 slds-large-order_2 slds-var-p-bottom_x-small">
+            <button
+                onclick={goNext}
+                disabled={isNextDisabled}
+                title={nextLabel}
+                class="slds-button slds-size_full slds-var-p-vertical_small slds-var-p-horizontal_large ex-button_next"
+            >{nextLabel}</button>
+        </div>
+    </div>
+    <div lwc:else class="slds-grid slds-wrap slds-grid_align-center">
+        <div class="slds-col slds-size_10-of-12 slds-large-size_5-of-12">
+            <button
+                lwc:if={hasNext}
+                onclick={goNext}
+                disabled={isNextDisabled}
+                title={nextLabel}
+                class="slds-button slds-size_full slds-var-p-vertical_small slds-var-p-horizontal_large ex-button_next"
+            >{nextLabel}</button>
+            <button
+                lwc:elseif={hasBack}
+                onclick={goBack}
+                title={backLabel}
+                class="slds-button slds-size_full slds-var-p-vertical_small slds-var-p-horizontal_large ex-button_back"
+            >{backLabel}</button>
+        </div>
+    </div>
+</template>

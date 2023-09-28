@@ -1,0 +1,89 @@
+<template>
+	<template lwc:if={isLoading}>
+		<lightning-spinner size="large"></lightning-spinner>
+	</template>
+	<template lwc:else>
+		<!-- 削除不可（参照画面）の場合 アップローダーは表示しない -->
+		<template lwc:if={canUpload}>
+			<!-- ファイル種別 -->
+			<template if:false={isOptionHidden}>
+				<template lwc:if={isMultiOption}>
+					<lightning-combobox
+						options={options}
+						onchange={changeCombobox}
+						class="ex-combobox"
+						placeholder="提出する書類の種類"
+					></lightning-combobox>
+				</template>
+				<template lwc:else>
+					<lightning-combobox
+						options={options}
+						onchange={changeCombobox}
+						class="ex-combobox"
+						value={singleValue}
+					></lightning-combobox>
+				</template>
+			</template>
+			<div class="slds-m-top_x-small slds-m-bottom_large ex-text-heading_small">
+				<div class="ex-box_setsumei" lwc:if={existsShoruiSetsumei}>
+					<lightning-formatted-rich-text value={shoruiSetsumei}></lightning-formatted-rich-text>
+				</div>
+			</div>
+
+			<!-- 健康保険証 -->
+			<template lwc:if={isKenkoHoken}>
+				<div class="slds-text-align_center ex-text_bold ex-text-heading_small slds-m-vertical_small">
+					画像の通り、マスキングして提出してください。
+				</div>
+				<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+					<img src={kenkoHokenMasking} class="slds-col slds-size_10-of-12">
+				</div>
+				<div class="slds-m-top_small slds-box slds-box_small slds-theme_default ex-border-around_thin">
+					<lightning-input
+						type="checkbox"
+						label="該当箇所のマスキングを行いました。"
+						onchange={changeKenkoHoken}
+						checked={isKenkoHokenMasking}
+						class="ex-input-checkbox ex-input-checkbox-scale_3-of-2"
+					></lightning-input>
+				</div>
+			</template>
+
+			<!-- 住民票 -->
+			<template lwc:if={isJuminHyo}>
+				<div class="slds-m-top_small slds-box slds-box_small slds-theme_default ex-border-around_thin">
+					<lightning-input
+						type="checkbox"
+						label="マイナンバー（個人番号）・住民票コードが記載されている場合には、マスキングして提出してください。"
+						onchange={changeJuminHyo}
+						checked={isJuminHyoMasking}
+						class="ex-input-checkbox ex-input-checkbox-scale_3-of-2"
+					></lightning-input>
+				</div>
+			</template>
+
+			<!-- ファイルアップローダ -->
+			<div class="slds-m-top_small" data-id="fileUploaderContainer">
+				<lightning-file-upload
+					accept={fileLimit.acceptExtensions}
+					record-id={recordId}
+					disabled={fileUploaderDisabled}
+					onuploadfinished={handleUploaded}
+				></lightning-file-upload>
+			</div>
+		</template>
+
+		<p class="ex-text-heading_small slds-m-top_small" lwc:if={isOptionEmpty}>提出が必要な書類はありません。</p>
+
+		<!-- ファイルリスト -->
+		<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+			<div class="slds-col slds-size_full">
+				<c-ex-file-list
+					content-version-id-list={fileList}
+					un-deletable={unDeletable}
+					onfinishdelete={handleDeleted}
+				></c-ex-file-list>
+			</div>
+		</div>
+	</template>
+</template>

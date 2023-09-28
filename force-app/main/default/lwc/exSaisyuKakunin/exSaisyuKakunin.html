@@ -1,0 +1,616 @@
+<template>
+	<template lwc:if={isLoading}>
+		<lightning-spinner size="large"></lightning-spinner>
+	</template>
+	<template lwc:else>
+
+		<div class="slds-text-align_center ex-text-heading_large ex-text-color_brand slds-m-bottom_medium">
+			登録内容の確認
+		</div>
+		<template lwc:if={isDisabled}></template>
+		<template lwc:else>
+			<div class="slds-text-align_center ex-text_bold slds-m-bottom_small">
+				※この画面ではまだ申請が完了していません※
+			</div>
+			<div class="slds-text-align_center slds-m-bottom_medium">
+				入力頂いた内容に誤りがないかを確認してください。<br>
+				「認定請求をする」ボタンを押下することで、申請が完了します。
+			</div>
+		</template>
+
+		<!-- 申請者情報 -->
+		<div class="slds-text-align_center ex-text-heading_medium ex-text-color_brand slds-p-top_medium slds-m-bottom_medium"><template lwc:if={isSiteModeSatoya}>認定請求援助者</template><template lwc:else>申請者</template></div>
+
+		<lightning-layout multiple-rows="true" class="slds-p-horizontal_small ex-box ex-box_theme ex-layout-m-vertical_medium slds-m-bottom_medium">
+
+			<lightning-layout-item size="12" class="slds-text-align_center ex-text-heading_large">
+				{seikyushaData.Shimei}
+			</lightning-layout-item>
+
+			<lightning-layout-item size="12" class="ex-sub-title">
+				<template lwc:if={isSiteModeSatoya}>認定請求援助者</template><template lwc:else>申請者</template>情報
+			</lightning-layout-item>
+
+			<template lwc:if={isSiteModeSatoya}>
+				<lightning-layout-item size="6" class="ex-text_bold">
+					種類
+				</lightning-layout-item>
+				<lightning-layout-item size="6">
+					{seikyushaData.ShisetsuShurui}
+				</lightning-layout-item>
+			</template>
+
+			<lightning-layout-item size="6" class="ex-text_bold">
+				{shimeiLbl}
+			</lightning-layout-item>
+			<lightning-layout-item size="6">
+				{seikyushaData.Shimei}
+			</lightning-layout-item>
+
+			<lightning-layout-item size="6" class="ex-text_bold">
+				{shimeiFuriganaLbl}
+			</lightning-layout-item>
+			<lightning-layout-item size="6">
+				{seikyushaData.ShimeiFurigana}
+			</lightning-layout-item>
+
+			<lightning-layout-item size="6" class="ex-text_bold">
+				生年月日
+			</lightning-layout-item>
+			<lightning-layout-item size="6">
+				{seikyushaData.SeinenGappiDate}
+			</lightning-layout-item>
+
+			<template lwc:if={isNotSelectedSatoya}>
+				<lightning-layout-item size="6" class="ex-text_bold">
+					ファミリーホーム名称
+				</lightning-layout-item>
+				<lightning-layout-item size="6">
+					{seikyushaData.ShisetsuMeisho}
+				</lightning-layout-item>
+			</template>
+
+
+			<!-- 要配慮者の場合、住所と電話番号は表示しない -->
+			<template if:false={isSiteModeDv}>
+				<lightning-layout-item size="6" class="ex-text_bold">
+					{yubinBangoLbl}
+				</lightning-layout-item>
+				<lightning-layout-item size="6">
+					{seikyushaData.YubinBangou}
+				</lightning-layout-item>
+
+				<lightning-layout-item size="6" class="ex-text_bold">
+					{jushoLbl}
+				</lightning-layout-item>
+				<lightning-layout-item size="6">
+					{seikyushaData.Jusho}
+				</lightning-layout-item>
+
+				<lightning-layout-item size="6" class="ex-text_bold">
+					電話番号
+				</lightning-layout-item>
+				<lightning-layout-item size="6">
+					{seikyushaData.DenwaBangou}
+				</lightning-layout-item>
+			</template>
+
+			<lightning-layout-item size="6" class="ex-text_bold">
+				メールアドレス
+			</lightning-layout-item>
+			<lightning-layout-item size="6">
+				{seikyushaData.MailAddress}
+			</lightning-layout-item>
+			<lightning-layout-item>
+				※ユーザー登録時に登録したEメールアドレスは、忘れないようにご注意ください。ユーザーID（メールアドレス）をお忘れの場合は別途手続きが必要となります。
+			</lightning-layout-item>
+
+
+			<template lwc:if={seikyushaData.IsKozaFilled}>
+				<lightning-layout-item size="12" class="ex-sub-title">
+					振込口座
+				</lightning-layout-item>
+
+				<!-- ゆうちょの場合 -->
+				<template lwc:if={seikyushaData.IsYucho}>
+
+					<lightning-layout-item size="6" class="ex-text_bold">
+						口座種別
+					</lightning-layout-item>
+					<lightning-layout-item size="6">
+						{seikyushaData.YuchoBunrui}
+					</lightning-layout-item>
+
+					<lightning-layout-item size="6" class="ex-text_bold">
+						ゆうちょ記号
+					</lightning-layout-item>
+					<lightning-layout-item size="6">
+						{seikyushaData.YuchoKigo}
+					</lightning-layout-item>
+
+					<lightning-layout-item size="6" class="ex-text_bold">
+						ゆうちょ番号
+					</lightning-layout-item>
+					<lightning-layout-item size="6">
+						{seikyushaData.YuchoBango}
+					</lightning-layout-item>
+
+					<lightning-layout-item size="6" class="ex-text_bold">
+						口座名義
+					</lightning-layout-item>
+					<lightning-layout-item size="6">
+						{seikyushaData.YuchoKouzaMeigi}
+					</lightning-layout-item>
+				</template>
+
+				<!-- その他銀行の場合 -->
+				<template lwc:else>
+
+					<lightning-layout-item size="6" class="ex-text_bold">
+						金融機関名
+					</lightning-layout-item>
+					<lightning-layout-item size="6">
+						{seikyushaData.KinyuKikan}（{seikyushaData.KinyuKikanCode}）
+					</lightning-layout-item>
+
+					<lightning-layout-item size="6" class="ex-text_bold">
+						店名
+					</lightning-layout-item>
+					<lightning-layout-item size="6">
+						{seikyushaData.Shiten}（{seikyushaData.ShitenCode}）
+					</lightning-layout-item>
+
+					<lightning-layout-item size="6" class="ex-text_bold">
+						口座種別
+					</lightning-layout-item>
+					<lightning-layout-item size="6">
+						{seikyushaData.Bunrui}
+					</lightning-layout-item>
+
+					<lightning-layout-item size="6" class="ex-text_bold">
+						口座番号
+					</lightning-layout-item>
+					<lightning-layout-item size="6">
+						{seikyushaData.KouzaBangou}
+					</lightning-layout-item>
+
+					<lightning-layout-item size="6" class="ex-text_bold">
+						口座名義
+					</lightning-layout-item>
+					<lightning-layout-item size="6">
+						{seikyushaData.KouzaMeigi}
+					</lightning-layout-item>
+				</template>
+			</template>
+
+
+			<lightning-layout-item size="12" class="ex-sub-title">
+				本人確認
+			</lightning-layout-item>
+
+			<lightning-layout-item size="6" class="ex-text_bold">
+				本人確認方法
+			</lightning-layout-item>
+			<lightning-layout-item size="6">
+				{ninteiSeikyuData.HonninKakuninHoho}
+			</lightning-layout-item>
+
+
+			<lightning-layout-item size="12" class="ex-sub-title">
+				提出書類
+			</lightning-layout-item>
+
+			<lightning-layout-item size="12">
+				<c-ex-file-list
+					content-version-id-list={ninteiSeikyuData.fileList}
+					un-deletable={unDeletableTrue}
+					hidden-header
+				></c-ex-file-list>
+				<c-ex-file-list
+					content-version-id-list={seikyushaData.KozaShoruiList}
+					un-deletable={unDeletableTrue}
+					hidden-header
+				></c-ex-file-list>
+			</lightning-layout-item>
+		</lightning-layout>
+
+
+		<div class="slds-text-align_center ex-text-heading_medium ex-text-color_brand slds-p-top_medium slds-m-bottom_medium">
+			<template lwc:if={isSiteModeSatoya}>子供(対象者・認定請求者)</template>
+			<template lwc:else>対象者(子供)</template>
+		</div>
+
+		<!-- 対象児童情報 -->
+		<template for:each={taishoJidoList} for:item="taishoJidoData">
+			<lightning-layout multiple-rows="true" class="slds-p-horizontal_small ex-box ex-box_theme ex-layout-m-vertical_medium slds-m-bottom_medium" key={taishoJidoData.Id}>
+
+
+				<lightning-layout-item size="12" class="ex-sub-title">
+					<template lwc:if={isSiteModeSatoya}>子供(対象者・認定請求者)</template>
+					<template lwc:else>対象者(子供)</template>
+					情報
+				</lightning-layout-item>
+
+				<template if:false={isSiteModeSatoya}>
+					<lightning-layout-item size="6" class="ex-text_bold">
+						{taishoJidoLbl.TaishoshaKubun__c}
+					</lightning-layout-item>
+					<lightning-layout-item size="6">
+						{taishoJidoData.TaishoshaKubun}
+					</lightning-layout-item>
+				</template>
+
+				<lightning-layout-item size="6" class="ex-text_bold">
+					{taishoJidoLbl.Shimei__c}
+				</lightning-layout-item>
+				<lightning-layout-item size="6">
+					{taishoJidoData.Shimei}
+				</lightning-layout-item>
+
+				<lightning-layout-item size="6" class="ex-text_bold">
+					{taishoJidoLbl.ShimeiFurigana__c}
+				</lightning-layout-item>
+				<lightning-layout-item size="6">
+					{taishoJidoData.ShimeiFurigana}
+				</lightning-layout-item>
+
+
+				<lightning-layout-item size="6" class="ex-text_bold">
+					{taishoJidoLbl.SeinenGappiDate__c}
+				</lightning-layout-item>
+				<lightning-layout-item size="6">
+					{taishoJidoData.SeinenGappiDate}
+				</lightning-layout-item>
+
+				<template lwc:if={taishoJidoData.Fukumu18}>
+					<lightning-layout-item size="6" class="ex-text_bold">
+						{label.EX_TJD_SeikyushaKubun}
+					</lightning-layout-item>
+					<lightning-layout-item size="6">
+						{taishoJidoData.SeikyushaKubun}
+					</lightning-layout-item>
+				</template>
+
+				<template lwc:if={isSiteModeSatoya}>
+					<lightning-layout-item size="6" class="ex-text_bold">
+						対象児童等 令和5年度中 新規措置
+					</lightning-layout-item>
+					<lightning-layout-item size="6">
+						{taishoJidoData.KonnendochuShinkiSochi}
+					</lightning-layout-item>
+
+					<lightning-layout-item size="6" class="ex-text_bold">
+						対象児童 備考（令和5年度中の措置解除予定等）
+					</lightning-layout-item>
+					<lightning-layout-item size="6">
+						{taishoJidoData.Biko}
+					</lightning-layout-item>
+				</template>
+
+				<template lwc:else>
+
+					<lightning-layout-item size="6" class="ex-text_bold">
+						{label.EX_TJD_DoukyoShubetsu}
+					</lightning-layout-item>
+					<lightning-layout-item size="6">
+						{taishoJidoData.SeikyushaDoukyoShubetsu}
+					</lightning-layout-item>
+
+					<template lwc:if={taishoJidoData.IsBekkyo}>
+						<template if:false={isSiteModeDv}>
+							<lightning-layout-item size="6" class="ex-text_bold">
+								{taishoJidoLbl.YubinBangou__c}
+							</lightning-layout-item>
+							<lightning-layout-item size="6">
+								{taishoJidoData.YubinBangou}
+							</lightning-layout-item>
+						</template>
+
+						<lightning-layout-item size="6" class="ex-text_bold">
+							{taishoJidoLbl.Jusho__c}
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.Jusho}
+						</lightning-layout-item>
+					</template>
+
+					<template lwc:if={taishoJidoData.isNotSeikyushaDoukyoShubetsuHonnin}>
+						<lightning-layout-item size="6" class="ex-text_bold">
+							{label.EX_TJD_Tsudukigara}
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.SeikyushaTsudukigara}
+						</lightning-layout-item>
+
+						<template lwc:if={taishoJidoData.isTsudukigaraSonota}>
+							<lightning-layout-item size="6" class="ex-text_bold">
+								{taishoJidoLbl.SonotaShousai__c}
+							</lightning-layout-item>
+							<lightning-layout-item size="6">
+								{taishoJidoData.SonotaShousai}
+							</lightning-layout-item>
+						</template>
+					</template>
+
+					<template lwc:if={taishoJidoData.IsTochuTennyuShussei}>
+						<lightning-layout-item size="12" class="ex-text_bold">
+							{taishoJidoLbl.IsTochuTennyuShussei__c}
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" class="ex-text_bold">
+							{taishoJidoLbl.TennyuShusseiDate__c}
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.TennyuShusseiDate}
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" class="ex-text_bold">
+							{taishoJidoLbl.TennyuShusseiDateSonota__c}
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.TennyuShusseiDateSonota}
+						</lightning-layout-item>
+					</template>
+
+					<template lwc:if={taishoJidoData.IsTochuTenshutsu}>
+						<lightning-layout-item size="12" class="ex-text_bold">
+							{taishoJidoLbl.IsTochuTenshutsu__c}
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" class="ex-text_bold">
+							{taishoJidoLbl.TenshutsuDate__c}
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.TenshutsuDate}
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" class="ex-text_bold">
+							{taishoJidoLbl.TenshutsuDateSonota__c}
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.TenshutsuDateSonota}
+						</lightning-layout-item>
+					</template>
+
+					<lightning-layout-item size="6" class="ex-text_bold">
+						国籍
+					</lightning-layout-item>
+					<lightning-layout-item size="6">
+						{taishoJidoData.Kokuseki}
+					</lightning-layout-item>
+				</template>
+
+				<template lwc:if={taishoJidoData.IsMoushitate}>
+					<lightning-layout-item size="12" class="ex-sub-title">
+						申立書
+					</lightning-layout-item>
+
+					<lightning-layout-item size="6" class="ex-text_bold">
+						申立の種別
+					</lightning-layout-item>
+					<lightning-layout-item size="6">
+						<p lwc:if={taishoJidoData.IsKokennin} class="slds-m-vertical_xxx-small">
+							{taishoJidoLbl.Moushitate_KokenninCheck__c}
+						</p>
+						<p lwc:if={taishoJidoData.IsBekkyoKango} class="slds-m-vertical_xxx-small">
+							{taishoJidoLbl.Moushitate_BekkyoKango__c}
+						</p>
+						<p lwc:if={taishoJidoData.IsRyugaku} class="slds-m-vertical_xxx-small">
+							{taishoJidoLbl.Moushitate_KaigaiRyugakuCheck__c}
+						</p>
+						<p lwc:if={taishoJidoData.IsRikon} class="slds-m-vertical_xxx-small">
+							{taishoJidoLbl.Moushitate_RikonKyogiCheck__c}
+						</p>
+						<p lwc:if={taishoJidoData.IsFuboSitei} class="slds-m-vertical_xxx-small">
+							{taishoJidoLbl.Moushitate_FuboSiteishaCheck__c}
+						</p>
+						<p lwc:if={taishoJidoData.IsBetsuJusho} class="slds-m-vertical_xxx-small">
+							{taishoJidoDvLbl.Moushitate_BetsuJushoCheck__c}
+						</p>
+					</lightning-layout-item>
+
+					<template lwc:if={taishoJidoData.isBekkyoOrRyugaku}>
+						<lightning-layout-item size="6" class="ex-text_bold">
+							別居の理由
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.BekkyoRiyu}
+						</lightning-layout-item>
+
+						<template lwc:if={taishoJidoData.isBekkyoRiyuSonota}>
+							<lightning-layout-item size="6" class="ex-text_bold">
+								{taishoJidoLbl.Moushitate_BekkyoRiyuSonota__c}
+							</lightning-layout-item>
+							<lightning-layout-item size="6">
+								{taishoJidoData.BekkyoRiyuSonota}
+							</lightning-layout-item>
+						</template>
+
+						<lightning-layout-item size="6" class="ex-text_bold">
+							{taishoJidoLbl.Moushitate_BekkyoKaishiDate__c}
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.BekkyoStart}
+						</lightning-layout-item>
+						<lightning-layout-item size="6" class="ex-text_bold">
+							{taishoJidoLbl.Moushitate_BekkyoShuryoDate__c}
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.BekkyoEnd}
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" class="ex-text_bold">
+							{taishoJidoLbl.Moushitate_KangoJokyo__c}
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.KangoJokyo}
+						</lightning-layout-item>
+					</template>
+
+					<template lwc:if={taishoJidoData.IsRyugaku}>
+						<lightning-layout-item size="6" class="ex-text_bold">
+							{taishoJidoLbl.Moushitate_RyugakusakiMei__c}
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.Ryugakusaki}
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" class="ex-text_bold">
+							{taishoJidoLbl.Moushitate_RyugakumaeKyojuKaishiDate__c}
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.RyugakumaeKyojuStart}
+						</lightning-layout-item>
+						<lightning-layout-item size="6" class="ex-text_bold">
+							{taishoJidoLbl.Moushitate_RyugakumaeKyojuShuryoDate__c}
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.RyugakumaeKyojuEnd}
+						</lightning-layout-item>
+
+						<template if:false={isSiteModeDv}>
+							<lightning-layout-item size="6" class="ex-text_bold">
+								{taishoJidoLbl.Moushitate_RyugakumaeKyojuYubinBango__c}
+							</lightning-layout-item>
+							<lightning-layout-item size="6">
+								{taishoJidoData.RyugakumaeKyojuYubinBango}
+							</lightning-layout-item>
+						</template>
+
+						<lightning-layout-item size="6" class="ex-text_bold">
+							{taishoJidoLbl.Moushitate_RyugakumaeJusho__c}
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.RyugakumaeKyojuJusho}
+						</lightning-layout-item>
+					</template>
+				</template>
+
+
+				<lightning-layout-item size="12" class="ex-sub-title">
+					振込口座
+				</lightning-layout-item>
+
+				<lightning-layout-item size="6" class="ex-text_bold">
+					{label.EX_TJD_UketoriKouzaKubun}
+				</lightning-layout-item>
+				<lightning-layout-item size="6">
+					{taishoJidoData.UketoriKouzaKubun}
+				</lightning-layout-item>
+
+				<template lwc:if={taishoJidoData.IsSelectedTaishosha}>
+
+					<!-- ゆうちょの場合 -->
+					<template lwc:if={taishoJidoData.IsYucho}>
+						<lightning-layout-item size="6" class="ex-text_bold">
+							金融機関名
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							ゆうちょ銀行
+						</lightning-layout-item>
+						<lightning-layout-item size="6" class="ex-text_bold">
+							口座種別
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.YuchoBunrui}
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" class="ex-text_bold">
+							ゆうちょ記号
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.YuchoKigo}
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" class="ex-text_bold">
+							ゆうちょ番号
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.YuchoBango}
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" class="ex-text_bold">
+							口座名義
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.YuchoKouzaMeigi}
+						</lightning-layout-item>
+					</template>
+
+					<!-- その他銀行の場合 -->
+					<template lwc:else>
+
+						<lightning-layout-item size="6" class="ex-text_bold">
+							金融機関名
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.KinyuKikan}（{taishoJidoData.KinyuKikanCode}）
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" class="ex-text_bold">
+							店名
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.Shiten}（{taishoJidoData.ShitenCode}）
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" class="ex-text_bold">
+							口座種別
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.Bunrui}
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" class="ex-text_bold">
+							口座番号
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.KouzaBangou}
+						</lightning-layout-item>
+
+						<lightning-layout-item size="6" class="ex-text_bold">
+							口座名義
+						</lightning-layout-item>
+						<lightning-layout-item size="6">
+							{taishoJidoData.KouzaMeigi}
+						</lightning-layout-item>
+					</template>
+				</template>
+
+
+				<lightning-layout-item size="12" class="ex-sub-title">
+					提出書類
+				</lightning-layout-item>
+
+				<lightning-layout-item size="12">
+					<c-ex-file-list
+						content-version-id-list={taishoJidoData.TaishoJidoFileList}
+						un-deletable="true"
+						hidden-header
+					></c-ex-file-list>
+				</lightning-layout-item>
+			</lightning-layout>
+		</template>
+
+		<div class="slds-p-top_large">
+			<!-- 審査中の場合 -->
+			<template lwc:if={isDisabled}>
+				<c-ex-footer
+					has-back
+					onback={goList}
+				></c-ex-footer>
+			</template>
+			<!-- 未申請の場合 -->
+			<template lwc:else>
+				<c-ex-footer
+					has-back
+					has-next
+					next-label="認定請求をする"
+					is-next-disabled={isRequestDisabled}
+					onback={goBack}
+					onnext={request}
+				></c-ex-footer>
+			</template>
+		</div>
+	</template>
+</template>

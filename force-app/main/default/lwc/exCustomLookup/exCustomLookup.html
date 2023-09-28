@@ -1,0 +1,74 @@
+<template>
+    <div>
+        <div class="slds-form-element">
+            <div class="slds-form-element__control">
+                <div class="slds-combobox_container">
+                    <div class={boxClass} aria-expanded="true" aria-haspopup="listbox" role="combobox">
+                        <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+
+							<!-- 値設定済の場合、pillで表示-->
+                            <template if:true={isValueSelected}>
+                                <abbr class="slds-required" title="必須" lwc:if={required}>*</abbr>
+                                <label class="slds-form-element__label">{label}</label>
+                                <div class="slds-pill-container">
+                                    <lightning-pill
+                                        class="pillSize"
+                                        label={selectedName}
+                                        name={selectedName}
+                                        onremove={handleRemovePill}
+                                        href={href}
+                                    >
+                                        <lightning-icon
+                                            class="ex-icon_white"
+                                            icon-name={iconName}
+                                            alternative-text="acc"
+                                        ></lightning-icon>
+                                    </lightning-pill>
+                                </div>
+                            </template>
+
+							<!-- 値未選択の場合、入力フォームを表示 -->
+                            <template if:false={isValueSelected}>
+                                <div class="slds-p-top_none">
+                                    <abbr class="slds-required" title="必須" lwc:if={required}>*</abbr>
+                                    <label class="slds-form-element__label">{label}</label>
+                                    <lightning-input
+                                        class={inputClass}
+                                        type="search"
+                                        value={searchTerm}
+                                        onclick={handleClick}
+                                        onblur={onBlur}
+                                        onchange={onChange}
+                                        autocomplete="off"
+                                        disabled={disabled}
+                                        variant="label-hidden"
+                                    >
+                                    </lightning-input>
+                                </div>
+                            </template>
+                        </div>
+
+						<!-- 検索候補をlistboxで表示する -->
+                        <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox">
+                            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                <template for:each={records} for:item="record">
+                                    <li key={record.Id} onclick={onSelect} data-id={record.Id} role="presentation" data-name={record.DisplayName}>
+                                        <span class="slds-lookup__item-action slds-lookup__item-action--label" role="option">
+                                            <lightning-icon
+                                                class="slds-icon slds-icon--small ex-icon_white"
+                                                icon-name={iconName}
+                                                alternative-text={objName}
+                                                size="small"
+                                            ></lightning-icon>
+                                            <span class="slds-truncate">{record.DisplayName}</span>
+                                        </span>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

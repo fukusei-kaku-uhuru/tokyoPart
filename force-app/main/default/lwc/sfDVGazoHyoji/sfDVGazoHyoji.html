@@ -1,0 +1,150 @@
+<template>
+    <template if:false={isError}>
+        <template if:false={isPermissionError}>
+            <template if:false={isEmpty}>
+                <lightning-layout style="display:block">
+                    <div class="slds-tabs_default" style="background-color:white">
+                        <lightning-tabset class="slds-tabs_default__nav">  
+                            <template for:each={shinseiShoruiList} for:item="shoruiGroup" for:index="groupidx">
+                                <lightning-tab class="slds-tabs_default__item" label={shoruiGroup.ShinseiShoruiTeigiName} key={shoruiGroup.ShinseiShoruiTeigiId}>
+                                    <template for:each={shoruiGroup.shoruiList} for:item="record" for:index="idx">
+                                        <div class="slds-tabs_default__content" key={record.id}>
+                                            <img src={record.src}/>
+                                            <div class="slds-p-around_small slds-grid slds-wrap">
+                                                <div class="slds-m-around_xx-small slds-col"><lightning-formatted-url label="書類プレビュー" value={record.link} target="_blank" rel="noopener noreferrer"></lightning-formatted-url></div>
+                                                <div class="slds-m-around_xx-small slds-col"></div>
+                                            </div>
+                                            <div class="slds-p-around_small">
+                                                    <div class="slds-grid slds-wrap">
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-input type="text" label="用途" value={record.Yoto} read-only="true"></lightning-input></div>
+                                                    <div class="slds-m-around_xx-small slds-col"></div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-p-around_small slds-border_top">
+                                                <div class="slds-grid slds-wrap">
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-input type="text" label="氏名（OCR結果）" value={record.OCR_Shimei} read-only="true"></lightning-input></div>
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-input type="text" label="判定：氏名" value={record.Hantei_Shimei} read-only="true"></lightning-input></div>
+                                                </div>
+                                                <div class="slds-grid slds-wrap">
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-input type="checkbox" label="自動判定：氏名" checked={record.JidoHantei_Shimei} disabled="true"></lightning-input></div>
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-input type="checkbox" label="手動チェック：氏名" data-groupidx={groupidx} data-idx={idx} checked={record.ShudoCheck_Shimei} onchange={onchangeShudoCheck_Shimei} disabled={isNotCheckStatus}></lightning-input></div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-p-around_small slds-border_top">
+                                                <div class="slds-grid slds-wrap">
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-input type="text" label="生年月日（OCR結果）" value={record.OCR_SeinenGappi} read-only="true"></lightning-input></div>
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-input type="text" label="判定：生年月日" value={record.Hantei_SeinenGappi} read-only="true"></lightning-input></div>
+                                                </div>
+                                                <div class="slds-grid slds-wrap">
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-input type="checkbox" label="自動判定：生年月日" checked={record.JidoHantei_SeinenGappi} disabled="true"></lightning-input></div>
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-input type="checkbox" label="手動チェック：生年月日" data-groupidx={groupidx} data-idx={idx} checked={record.ShudoCheck_SeinenGappi} onchange={onchangeShudoCheck_SeinenGappi} disabled={isNotCheckStatus}></lightning-input></div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-p-around_small slds-border_top">
+                                                <div class="slds-grid slds-wrap">
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-input type="text" label="住所（OCR結果）" value={record.OCR_Jusho} read-only="true"></lightning-input></div>
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-input type="text" label="判定：住所" value={record.Hantei_Jusho} read-only="true"></lightning-input></div>
+                                                </div>
+                                                <div class="slds-grid slds-wrap">
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-input type="checkbox" label="自動判定：住所" checked={record.JidoHantei_Jusho} disabled="true"></lightning-input></div>
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-input type="checkbox" label="手動チェック：住所" data-groupidx={groupidx} data-idx={idx} checked={record.ShudoCheck_Jusho} onchange={onchangeShudoCheck_Jusho} disabled={isNotCheckStatus}></lightning-input></div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-p-around_small slds-border_top">
+                                                <div class="slds-grid slds-wrap">
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-input type="text" label="有効期限（OCR結果）" value={record.OCR_YukoKigen} read-only="true"></lightning-input></div>
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-input type="text" label="判定：有効期限" value={record.Hantei_YukoKigen} read-only="true"></lightning-input></div>
+                                                </div>
+                                                <div class="slds-grid slds-wrap">
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-input type="checkbox" label="自動判定：有効期限" checked={record.JidoHantei_YukoKigen} disabled="true"></lightning-input></div>
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-input type="checkbox" label="手動チェック：有効期限" data-groupidx={groupidx} data-idx={idx} checked={record.ShudoCheck_YukoKigen} onchange={onchangeShudoCheck_YukoKigen} disabled={isNotCheckStatus}></lightning-input></div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-p-around_small slds-border_top">
+                                                <div class="slds-grid slds-wrap">
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-input type="text" label="テキスト全文（OCR結果）" value={record.OCR_TextZembun} read-only="true"></lightning-input></div>
+                                                    <div></div>
+                                                </div>
+                                                <div class="slds-grid slds-wrap">
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-input type="checkbox" label="手動チェック：テキスト全文" data-groupidx={groupidx} data-idx={idx} checked={record.ShudoCheck_TextZembun} onchange={onchangeShudoCheck_TextZembun} disabled={isNotCheckStatus}></lightning-input></div>
+                                                    <div></div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-p-around_small slds-border_top">
+                                                <div class="slds-grid slds-wrap">
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-input type="checkbox" label="マスキング不備" data-groupidx={groupidx} data-idx={idx} checked={record.MaskingFubi} onchange={onchangeMaskingFubi} disabled={isNotCheckStatus}></lightning-input></div>
+                                                    <div class="slds-m-around_xx-small slds-col"></div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-p-around_small">
+                                                <div class="slds-grid slds-wrap">
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-formatted-text value="登録日時" ></lightning-formatted-text></div>
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-formatted-date-time value={record.createdDate} year="numeric" month="2-digit" day="2-digit" hour="numeric" minute="numeric" second="numeric"></lightning-formatted-date-time></div>
+                                                    <div class="slds-m-around_xx-small slds-col"></div>
+                                                    <div class="slds-m-around_xx-small slds-col"></div>
+                                                </div>
+                                            </div>
+                                            <template if:true={isSaved}>
+                                                <lightning-layout style="display:block; background-color:white;">
+                                                    <div class="slds-text-heading_small slds-p-around_small"><lightning-formatted-text value="チェック内容を保存しました。"></lightning-formatted-text></div>
+                                                </lightning-layout>
+                                            </template>
+                                            <div class="slds-p-around_medium slds-text-color_error">
+                                                <lightning-formatted-text value={errorMessage}></lightning-formatted-text>
+                                            </div>
+                                            <div class="slds-p-around_small slds-border_bottom">
+                                                <div class="slds-grid slds-wrap">
+                                                    <div class="slds-m-around_xx-small slds-col"></div>
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-button variant="brand" label="チェック内容を保存" onclick={saveCheck} disabled={isNotCheckStatus}></lightning-button></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </lightning-tab>
+                            </template>
+                            <template lwc:if={hasMibunruiShorui}>
+                                <lightning-tab class="slds-tabs_default__item" label="未分類書類">
+                                    <template for:each={mibunruiShoruiList} for:item="record" for:index="idx">
+                                        <div class="slds-tabs_default__content" key={record.id}>
+                                            <img src={record.src}/>
+                                            <div class="slds-p-around_small slds-grid slds-wrap">
+                                                <div class="slds-m-around_xx-small slds-col"><lightning-formatted-url label="書類プレビュー" value={record.link} target="_blank" rel="noopener noreferrer"></lightning-formatted-url></div>
+                                                <div class="slds-m-around_xx-small slds-col"></div>
+                                            </div>
+                                            <div class="slds-p-around_small slds-grid slds-wrap">
+                                                <div class="slds-m-around_xx-small slds-col">
+                                                    <lightning-combobox name="shinseiShoruiTeigi"
+                                                                        label="申請書類定義種類選択"
+                                                                        value={record.ShinseiShoruiTeigiId}
+                                                                        options={shinseiShoruiTeigiOptions}
+                                                                        onchange={onchangeShinseiShoruiTeigi}
+                                                                        data-idx={idx}>
+                                                    </lightning-combobox>
+                                                </div>
+                                                <div class="slds-m-around_xx-small slds-col"></div>
+                                            </div>
+                                            <template if:true={isSavedTeigi}>
+                                                <lightning-layout style="display:block; background-color:white;">
+                                                    <div class="slds-text-heading_small slds-p-around_small"><lightning-formatted-text value="書類定義を保存しました。"></lightning-formatted-text></div>
+                                                </lightning-layout>
+                                            </template>
+                                            <div class="slds-p-around_medium slds-text-color_error">
+                                                <lightning-formatted-text value={errorMessage}></lightning-formatted-text>
+                                            </div>
+                                            <div class="slds-p-around_small slds-border_bottom">
+                                                <div class="slds-grid slds-wrap">
+                                                    <div class="slds-m-around_xx-small slds-col"></div>
+                                                    <div class="slds-m-around_xx-small slds-col"><lightning-button variant="brand" label="書類定義を保存" onclick={saveTeigi}></lightning-button></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </lightning-tab>
+                            </template> 
+                        </lightning-tabset>
+                    </div>
+                </lightning-layout>
+            </template>
+        </template>
+    </template>
+</template>

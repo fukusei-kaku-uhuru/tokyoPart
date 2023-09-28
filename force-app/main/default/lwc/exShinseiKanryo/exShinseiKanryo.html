@@ -1,0 +1,53 @@
+<template>
+    <lightning-spinner lwc:if={isLoading} size="large"></lightning-spinner>
+    <div lwc:else>
+        <div class="slds-text-align_center ex-text-heading_large ex-text-color_brand">申請完了</div>
+
+        <div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+            <div class="slds-col slds-size_12-of-12">
+                <div class="ex-box ex-box_theme">
+                    <span class="slds-text-align_center ex-text-heading_large">
+                        <p class="ex-text_normal">{ninteiSeikyuLbl.NinteiSeikyuUketsukeBangou__c}</p>
+                        <p>{ninteiSeikyuNo}</p>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="slds-var-m-top_large">
+            <p class="ex-text_bold ex-text-heading_medium">審査について</p>
+            <div class="slds-var-m-top_xx-small ex-text-heading_small">
+                <p><strong>支給認定の可否については、審査後、12 月 16 日以降に順次マイページ上でお知らせいたします。</strong></p>
+                <p>申請内容は、マイページ上の申請履歴からご確認いただけます。</p>
+            </div>
+        </div>
+
+        <div class="slds-var-m-top_large">
+            <p class="ex-text_bold ex-text-heading_medium">不備について</p>
+            <p class="slds-var-m-top_xx-small ex-text-heading_small">
+                <template lwc:if={isSiteModeDv}>
+                    申請内容に不備があった場合は、都から電話でご連絡をさせていただきます。内容をご確認のうえ、不備の修正をお願いします。
+                </template>
+                <template lwc:elseif={isSiteModeSatoya}>
+                    申請内容に不備があった場合は、都から電話でご連絡をさせていただきます。内容をご確認のうえ、不備の修正をお願いします。
+                </template>
+                <template lwc:else>
+                    申請内容に不備があった場合は、マイページ上で通知されます。内容をご確認のうえ、不備の修正をお願いします。
+                </template>
+            </p>
+        </div>
+
+        <div class="slds-var-m-top_large">
+            <p class="slds-var-m-top_xx-small">登録されているメールアドレス宛に、申請受付メールを送付しております。</p>
+            <p class="slds-var-m-top_xx-small">ご確認よろしくお願いします。</p>
+        </div>
+
+        <div class="slds-p-top_large">
+            <c-ex-footer
+                next-label="ホームに戻る"
+                has-next
+                onnext={goHome}
+            ></c-ex-footer>
+        </div>
+    </div>
+</template>

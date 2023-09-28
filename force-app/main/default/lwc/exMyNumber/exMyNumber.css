@@ -1,0 +1,15 @@
+.trustdock-vf-container{
+    position: fixed;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 11;
+}
+
+.spinnerClass{
+    background: gray;
+    position: fixed;
+    z-index: 10;
+}

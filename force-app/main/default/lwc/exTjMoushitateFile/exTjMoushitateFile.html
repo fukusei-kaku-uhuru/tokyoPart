@@ -1,0 +1,116 @@
+<template>
+	<template lwc:if={isLoading}>
+		<lightning-spinner size="large"></lightning-spinner>
+	</template>
+	<template lwc:else>
+		<template lwc:if={isNeedFileUpload}>
+
+			<div class="slds-text-align_center ex-text-heading_large ex-text-color_brand slds-m-bottom_medium">
+				申立書 書類アップロード
+			</div>
+			<div class="slds-text-align_center slds-m-bottom_small">
+				申立に必要な下記書類をアップロードしてください。
+			</div>
+
+			<div class="slds-var-m-top_x-large slds-p-vertical_x-small slds-text-align_center ex-box_white ex-text_bold">
+				申立人(申請者)：
+				<p class="slds-m-top_xx-small ex-text-heading_large">{moushitateData.SeikyushaShimei}</p>
+			</div>
+
+			<div class="slds-var-m-top_medium slds-p-vertical_x-small slds-text-align_center ex-box_white ex-text_bold">
+				対象者(子供)：
+				<p class="slds-m-top_xx-small ex-text-heading_large">{moushitateData.Shimei}</p>
+			</div>
+
+			<lightning-layout multiple-rows="true" class="slds-p-horizontal_small ex-layout-m-vertical_medium">
+				<template lwc:if={moushitateData.isDisabled}></template>
+				<lightning-layout-item size="12" lwc:else class="slds-p-vertical_medium">
+					<h2>下記の条件に一致するもののみ、アップロード可能です。</h2>
+					<h2>{fileLimit.extensionMessage}</h2>
+					<h2>{fileLimit.sizeMessage}</h2>
+					<p class="ex-text-color_destructive">下記の提出書類のうち、* がついている書類は必須提出です。</p>
+				</lightning-layout-item>
+
+				<lightning-layout-item size="12" lwc:if={moushitateData.IsKokennin} class="ex-box ex-box_theme">
+					<p class="ex-text-heading_medium">{taishoJidoLbl.Moushitate_KokenninCheck__c}</p>
+					<c-ex-file-kit
+						options={moushitateData.KokenninShoruiOptions}
+						record-id={taishoJidoId}
+						file-list={kokenninShoruiList}
+						un-deletable={moushitateData.isDisabled}
+						shorui-setsumei-map={moushitateData.ShoruiSetsumeiMap}
+						onfileupload={handleKokenninUploaded}
+						onfiledelete={handleKokenninDeleted}
+					></c-ex-file-kit>
+				</lightning-layout-item>
+
+				<lightning-layout-item size="12" lwc:if={moushitateData.IsBekkyo} class="ex-box ex-box_theme">
+					<p class="ex-text-heading_medium">{taishoJidoLbl.Moushitate_BekkyoKango__c}</p>
+					<c-ex-file-kit
+						options={moushitateData.BekkyoShoruiOptions}
+						record-id={taishoJidoId}
+						file-list={bekkyoShoruiList}
+						un-deletable={moushitateData.isDisabled}
+						shorui-setsumei-map={moushitateData.ShoruiSetsumeiMap}
+						onfileupload={handleBekkyoUploaded}
+						onfiledelete={handleBekkyoDeleted}
+					></c-ex-file-kit>
+				</lightning-layout-item>
+
+				<lightning-layout-item size="12" lwc:if={moushitateData.IsRyugaku} class="ex-box ex-box_theme">
+					<p class="ex-text-heading_medium">{taishoJidoLbl.Moushitate_KaigaiRyugakuCheck__c}</p>
+					<c-ex-file-kit
+						options={moushitateData.RyugakuShoruiOptions}
+						record-id={taishoJidoId}
+						file-list={ryugakuShoruiList}
+						un-deletable={moushitateData.isDisabled}
+						shorui-setsumei-map={moushitateData.ShoruiSetsumeiMap}
+						onfileupload={handleRyugakuUploaded}
+						onfiledelete={handleRyugakuDeleted}
+					></c-ex-file-kit>
+				</lightning-layout-item>
+
+				<lightning-layout-item size="12" lwc:if={moushitateData.IsRikon} class="ex-box ex-box_theme">
+					<p class="ex-text-heading_medium">{taishoJidoLbl.Moushitate_RikonKyogiCheck__c}</p>
+					<c-ex-file-kit
+						options={moushitateData.RikonShoruiOptions}
+						record-id={taishoJidoId}
+						file-list={rikonShoruiList}
+						un-deletable={moushitateData.isDisabled}
+						shorui-setsumei-map={moushitateData.ShoruiSetsumeiMap}
+						onfileupload={handleRikonUploaded}
+						onfiledelete={handleRikonDeleted}
+					></c-ex-file-kit>
+				</lightning-layout-item>
+
+				<lightning-layout-item size="12" lwc:if={moushitateData.IsFuboSitei} class="ex-box ex-box_theme">
+					<p class="ex-text-heading_medium">{taishoJidoLbl.Moushitate_FuboSiteishaCheck__c}</p>
+					<c-ex-file-kit
+						options={moushitateData.FuboShoruiOptions}
+						record-id={taishoJidoId}
+						file-list={fuboShoruiList}
+						un-deletable={moushitateData.isDisabled}
+						shorui-setsumei-map={moushitateData.ShoruiSetsumeiMap}
+						onfileupload={handleFuboUploaded}
+						onfiledelete={handleFuboDeleted}
+					></c-ex-file-kit>
+				</lightning-layout-item>
+
+			</lightning-layout>
+
+		</template>
+		<template lwc:else>
+			提出が必要な書類はありません。
+		</template>
+
+		<div class="slds-p-top_large">
+			<c-ex-footer
+				has-back
+				has-next
+				back-label="一覧へ戻る"
+				onback={goBack}
+				onnext={goNext}
+			></c-ex-footer>
+		</div>
+	</template>
+</template>

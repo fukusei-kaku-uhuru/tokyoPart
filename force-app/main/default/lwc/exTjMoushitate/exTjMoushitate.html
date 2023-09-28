@@ -1,0 +1,240 @@
+<template>
+	<template lwc:if={isLoading}>
+		<lightning-spinner size="large"></lightning-spinner>
+	</template>
+	<template lwc:else>
+
+		<div class="slds-text-align_center ex-text-heading_large ex-text-color_brand slds-m-bottom_medium">
+			申立書
+		</div>
+		<div class="slds-text-align_center slds-m-bottom_small">
+			私は以下の内容について申し立てます。
+		</div>
+		<div class="slds-text-align_center ex-text-color_destructive ex-text_bold slds-m-bottom_medium">
+			*必須項目です。
+		</div>
+
+		<div class="slds-var-m-top_x-large slds-p-vertical_x-small slds-text-align_center ex-box_white ex-text_bold">
+			申立人(申請者)：
+			<p class="slds-m-top_xx-small ex-text-heading_large">{moushitateData.SeikyushaShimei}</p>
+		</div>
+
+		<div class="slds-var-m-top_medium slds-p-vertical_x-small slds-text-align_center ex-box_white ex-text_bold">
+			対象者(子供)：
+			<p class="slds-m-top_xx-small ex-text-heading_large">{moushitateData.Shimei}</p>
+		</div>
+
+		<lightning-layout multiple-rows="true" class="slds-p-horizontal_small slds-m-top_x-large ex-layout-m-vertical_medium">
+
+			<!-- 申立の種別 -->
+			<lightning-layout-item size="12">
+				<span class="ex-text-color_destructive">*</span> 申立の種別
+				<p class="ex-text-color_neutral slds-m-vertical_xx-small">複数該当する場合はそれぞれチェックしてください。</p>
+			</lightning-layout-item>
+
+			<lightning-layout-item size="12">
+				<lightning-input
+					type="checkbox"
+					label={taishoJidoLbl.Moushitate_KokenninCheck__c}
+					checked={moushitateData.IsKokennin}
+					data-id="IsKokennin"
+					onchange={changeInput}
+					disabled={moushitateData.isDisabled}
+					class="ex-input-checkbox"
+				></lightning-input>
+				<p class="ex-text-color_neutral">申請者が対象者の未成年後見人である場合</p>
+			</lightning-layout-item>
+
+			<lightning-layout-item size="12">
+				<lightning-input
+					type="checkbox"
+					label={taishoJidoLbl.Moushitate_BekkyoKango__c}
+					checked={moushitateData.IsBekkyo}
+					data-id="IsBekkyo"
+					onchange={changeInput}
+					disabled={moushitateData.isDisabled}
+					class="ex-input-checkbox"
+				></lightning-input>
+				<p class="ex-text-color_neutral">対象者が就学、終了、療養等の理由により、申請者と別居しているが、申請者と生計を同じくしている場合</p>
+				<p class="ex-text-color_neutral">または、対象者の父母（もしくは未成年後見人）が都外に居住している場合、生計を維持している父母等に指定された方であって都内在住の方が認定請求を行う、かつ父母指定者が対象者と別居している場合</p>
+			</lightning-layout-item>
+
+			<lightning-layout-item size="12">
+				<lightning-input
+					type="checkbox"
+					label={taishoJidoLbl.Moushitate_KaigaiRyugakuCheck__c}
+					checked={moushitateData.IsRyugaku}
+					data-id="IsRyugaku"
+					onchange={changeInput}
+					disabled={moushitateData.isDisabled}
+					class="ex-input-checkbox"
+				></lightning-input>
+				<p class="ex-text-color_neutral">対象者が一時的に海外に留学している場合</p>
+			</lightning-layout-item>
+
+			<lightning-layout-item size="12">
+				<lightning-input
+					type="checkbox"
+					label={taishoJidoLbl.Moushitate_RikonKyogiCheck__c}
+					checked={moushitateData.IsRikon}
+					data-id="IsRikon"
+					onchange={changeInput}
+					disabled={moushitateData.isDisabled}
+					class="ex-input-checkbox"
+				></lightning-input>
+				<p class="ex-text-color_neutral">対象者と対象者を監護し生計を同一にしている申請者について、住民票上の住所と現在地が異なる場合</p>
+				<p class="ex-text-color_neutral" lwc:if={isSiteModeDv}>（配偶者の暴力（DV）のため住民票上の住所地と異なる所に居住している場合）</p>
+				<p class="ex-text-color_neutral" lwc:else>（離婚協議中の場合）</p>
+			</lightning-layout-item>
+
+			<lightning-layout-item size="12">
+				<lightning-input
+					type="checkbox"
+					label={taishoJidoLbl.Moushitate_FuboSiteishaCheck__c}
+					checked={moushitateData.IsFuboSitei}
+					data-id="IsFuboSitei"
+					onchange={changeInput}
+					disabled={moushitateData.isDisabled}
+					class="ex-input-checkbox"
+				></lightning-input>
+				<p class="ex-text-color_neutral">対象者の父母（もしくは未成年後見人）が都外に居住している場合、生計を維持している父母等に指定された方であって都内在住の方が申請を行う場合</p>
+			</lightning-layout-item>
+
+			<!-- 2か3の場合のみ表示 -->
+			<template lwc:if={isBekkyoOrRyugaku}>
+
+				<lightning-layout-item size="12">
+					<lightning-combobox
+						label="別居の理由"
+						value={moushitateData.BekkyoRiyu}
+						data-id="BekkyoRiyu"
+						options={bekkyoRiyuOptions}
+						onchange={changeInput}
+						required
+						disabled={moushitateData.isDisabled}
+						class="ex-text_normal"
+					></lightning-combobox>
+				</lightning-layout-item>
+				<lightning-layout-item size="12">
+					<lightning-input
+						lwc:if={isBekkyoRiyuSonota}
+						type="text"
+						label={taishoJidoLbl.Moushitate_BekkyoRiyuSonota__c}
+						value={moushitateData.BekkyoRiyuSonota}
+						data-id="BekkyoRiyuSonota"
+						placeholder="○○のため。"
+						max-length="255"
+						onchange={changeInput}
+						required
+						disabled={moushitateData.isDisabled}
+					></lightning-input>
+				</lightning-layout-item>
+
+				<lightning-layout-item size="12">
+					<lightning-input
+						type="date"
+						label={taishoJidoLbl.Moushitate_BekkyoKaishiDate__c}
+						value={moushitateData.BekkyoStart}
+						data-id="BekkyoStart"
+						placeholder="2023/09/01"
+						onchange={changeInput}
+						required
+						disabled={moushitateData.isDisabled}
+					></lightning-input>
+				</lightning-layout-item>
+				<lightning-layout-item size="12">
+					<lightning-input
+						type="date"
+						label={taishoJidoLbl.Moushitate_BekkyoShuryoDate__c}
+						value={moushitateData.BekkyoEnd}
+						data-id="BekkyoEnd"
+						placeholder="2025/03/31"
+						onchange={changeInput}
+						required
+						disabled={moushitateData.isDisabled}
+					></lightning-input>
+				</lightning-layout-item>
+
+				<lightning-layout-item size="12">
+					<lightning-input
+						type="text"
+						label={taishoJidoLbl.Moushitate_KangoJokyo__c}
+						value={moushitateData.KangoJokyo}
+						data-id="KangoJokyo"
+						placeholder="面会は月2回。養育費は対象者への口座へ毎月定額を送金。"
+						max-length="255"
+						onchange={changeInput}
+						required
+						disabled={moushitateData.isDisabled}
+					></lightning-input>
+				</lightning-layout-item>
+			</template>
+
+			<!-- 3の場合のみ表示 -->
+			<template lwc:if={moushitateData.IsRyugaku}>
+
+				<lightning-layout-item size="12">
+					<lightning-input
+						type="date"
+						label="対象者の別居前の国内（都内）居住期間開始日"
+						value={moushitateData.RyugakumaeKyojuStart}
+						data-id="RyugakumaeKyojuStart"
+						placeholder="2005/01/01"
+						onchange={changeInput}
+						required
+						disabled={moushitateData.isDisabled}
+					></lightning-input>
+				</lightning-layout-item>
+				<lightning-layout-item size="12">
+					<lightning-input
+						type="date"
+						label="対象者の別居前の国内（都内）居住期間終了日"
+						value={moushitateData.RyugakumaeKyojuEnd}
+						data-id="RyugakumaeKyojuEnd"
+						placeholder="2023/08/31"
+						onchange={changeInput}
+						required
+						disabled={moushitateData.isDisabled}
+					></lightning-input>
+				</lightning-layout-item>
+
+				<lightning-layout-item size="12">
+					<c-ex-jusho-form
+						yubin-bango={moushitateData.RyugakumaeKyojuYubinBango}
+						yubin-bango-label="対象者の別居前の国内（都内）居住地郵便番号"
+						jusho={moushitateData.RyugakumaeKyojuJusho}
+						jusho-label="対象者の別居前の国内（都内）居住地住所"
+						onchangejusho={changeJusho}
+						yubin-bango-disabled={moushitateData.isDisabled}
+						jusho-disabled={moushitateData.isDisabled}
+						is-jusho-search-success={isJushoSearchSuccess}
+					></c-ex-jusho-form>
+				</lightning-layout-item>
+
+				<lightning-layout-item size="12">
+					<lightning-input
+						type="text"
+						label={taishoJidoLbl.Moushitate_RyugakusakiMei__c}
+						value={moushitateData.Ryugakusaki}
+						data-id="Ryugakusaki"
+						placeholder="The University of Example"
+						max-length="255"
+						onchange={changeInput}
+						required
+						disabled={moushitateData.isDisabled}
+					></lightning-input>
+				</lightning-layout-item>
+			</template>
+		</lightning-layout>
+
+		<div class="slds-p-top_large">
+			<c-ex-footer
+				has-back
+				has-next
+				back-label="一覧へ戻る"
+				onback={goBack}
+				onnext={goNext}
+			></c-ex-footer>
+		</div>
+	</template>
+</template>

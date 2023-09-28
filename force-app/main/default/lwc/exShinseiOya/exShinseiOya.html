@@ -1,0 +1,176 @@
+<template>
+	<div class="slds-grid slds-wrap slds-grid_align-center">
+        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+			<template lwc:if={hasStyleLoaded}>
+				<div class="slds-text-align_center slds-m-top_medium ex-text-heading_medium" lwc:if={isNinteiSeikyuDisabled}>
+					<p>この認定請求は申請済です。</p>
+					<p>詳細を確認したい場合は、画面上部の申請履歴からご確認ください。</p>
+				</div>
+				<div lwc:else>
+					<c-ex-progress-indicator
+						steps={PROGRESS_STEP}
+						page-no={PAGE_NO}
+						current-step-id={displayTemplate}
+						done-step-id={doneStepId}
+					>
+					</c-ex-progress-indicator>
+
+
+					<div class="ex-base">
+						<!-- 各種規約同意チェック -->
+						<c-ex-agreement
+							lwc:if={displayAgreement}
+							onsubmit={finishProcess}
+							onrecordid={setRecordId}
+							page-no={PAGE_NO}
+							record-id={recordId}
+						></c-ex-agreement>
+
+						<!-- 誓約同意チェック -->
+						<c-ex-seiyaku-doui
+							lwc:if={displaySeiyaku}
+							onsubmit={finishProcess}
+							page-no={PAGE_NO}
+							record-id={recordId}
+						></c-ex-seiyaku-doui>
+
+						<!-- 18歳確認 -->
+						<c-ex-kakunin-18
+							lwc:elseif={displayKakunin18}
+							onsubmit={finishProcess}
+							page-no={PAGE_NO}
+							record-id={recordId}
+						></c-ex-kakunin-18>
+
+						<!-- 本人確認方法選択 -->
+						<c-ex-honnin-kakunin
+							lwc:elseif={displayHonninKakunin}
+							onsubmit={finishProcess}
+							page-no={PAGE_NO}
+							record-id={recordId}
+						></c-ex-honnin-kakunin>
+
+						<!-- マイナンバーカード 登録 -->
+						<c-ex-my-number
+							lwc:elseif={displayMyNumber}
+							onsubmit={finishProcess}
+							page-no={PAGE_NO}
+							record-id={recordId}
+						></c-ex-my-number>
+
+						<!-- マイナンバーカード エラー -->
+						<c-ex-my-number-error
+							lwc:elseif={displayMyNumberError}
+							onsubmit={finishProcess}
+							page-no={PAGE_NO}
+							record-id={recordId}
+						></c-ex-my-number-error>
+
+						<!-- マイナンバーカード 成功 -->
+						<c-ex-my-number-success
+							lwc:elseif={displayMyNumberSuccess}
+							onsubmit={finishProcess}
+							page-no={PAGE_NO}
+							record-id={recordId}
+						></c-ex-my-number-success>
+
+						<!-- ファイルアップロード -->
+						<c-ex-file-upload
+							lwc:elseif={displayFileUpload}
+							onsubmit={finishProcess}
+							page-no={PAGE_NO}
+							record-id={recordId}
+						></c-ex-file-upload>
+
+						<!-- 請求者入力 -->
+						<c-ex-seikyusha
+							lwc:elseif={displaySeikyusha}
+							onsubmit={finishProcess}
+							page-no={PAGE_NO}
+							record-id={recordId}
+						></c-ex-seikyusha>
+
+						<!-- 対象児童一覧 -->
+						<c-ex-taisho-jido
+							lwc:elseif={displayTaishoJido}
+							onsubmit={finishProcess}
+							ontaishojidoid={setTaishoJidoId}
+							page-no={PAGE_NO}
+							record-id={recordId}
+						></c-ex-taisho-jido>
+
+						<!-- 対象者入力 -->
+						<c-ex-taisho-jido-nyuryoku
+							lwc:elseif={displayTaishoJidoNyuryoku}
+							onsubmit={finishProcess}
+							ontaishojidoid={setTaishoJidoId}
+							page-no={PAGE_NO}
+							record-id={recordId}
+							taisho-jido-id={taishoJidoId}
+						></c-ex-taisho-jido-nyuryoku>
+
+						<!-- 対象者入力 ファイルアップロード -->
+						<c-ex-taisho-jido-file
+							lwc:elseif={displayTaishoJidoFile}
+							onsubmit={finishProcess}
+							page-no={PAGE_NO}
+							record-id={recordId}
+							taisho-jido-id={taishoJidoId}
+						></c-ex-taisho-jido-file>
+
+						<!-- 申立書入力 -->
+						<c-ex-tj-moushitate
+							lwc:elseif={displayTjMoushitate}
+							onsubmit={finishProcess}
+							page-no={PAGE_NO}
+							record-id={recordId}
+							taisho-jido-id={taishoJidoId}
+						></c-ex-tj-moushitate>
+
+						<!-- 申立書入力 ファイルアップロード -->
+						<c-ex-tj-moushitate-file
+							lwc:elseif={displayTjMoushitateFile}
+							onsubmit={finishProcess}
+							page-no={PAGE_NO}
+							record-id={recordId}
+							taisho-jido-id={taishoJidoId}
+						></c-ex-tj-moushitate-file>
+
+						<!-- 口座情報入力 -->
+						<c-ex-tj-koza
+							lwc:elseif={displayTjKoza}
+							onsubmit={finishProcess}
+							page-no={PAGE_NO}
+							record-id={recordId}
+							taisho-jido-id={taishoJidoId}
+						></c-ex-tj-koza>
+
+						<!-- 口座情報入力 ファイルアップロード -->
+						<c-ex-tj-koza-file
+							lwc:elseif={displayTjKozaFile}
+							onsubmit={finishProcess}
+							page-no={PAGE_NO}
+							record-id={recordId}
+							taisho-jido-id={taishoJidoId}
+						></c-ex-tj-koza-file>
+
+						<!-- 最終確認 -->
+						<c-ex-saisyu-kakunin
+							lwc:elseif={displaySaisyuKakunin}
+							onsubmit={finishProcess}
+							page-no={PAGE_NO}
+							record-id={recordId}
+						></c-ex-saisyu-kakunin>
+
+						<!-- 完了 -->
+						<c-ex-shinsei-kanryo
+							lwc:elseif={displayShinseiKanryo}
+							onsubmit={finishProcess}
+							record-id={recordId}
+						></c-ex-shinsei-kanryo>
+					</div>
+				</div>
+			</template>
+		</div>
+	</div>
+</template>

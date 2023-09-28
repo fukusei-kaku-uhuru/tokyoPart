@@ -1,0 +1,79 @@
+<template>
+    <div class="slds-grid slds-wrap slds-grid_align-center">
+        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+
+            <div class="slds-text-align_center">
+                <div class="ex-text-heading_large ex-text-color_brand slds-m-bottom_medium">認定通知書一覧</div>
+            </div>
+            <!-- <div class="slds-grid slds-wrap slds-box slds-var-m-vertical_small slds-align_absolute-center">
+                <div class="slds-col slds-large-size_1-of-3 slds-small-size_1-of-2">
+                    <div>氏名</div>
+                </div>
+                <div class="slds-col slds-large-size_1-of-3 slds-small-size_1-of-2">
+                    <div>認定結果</div>
+                </div>
+                <div class="slds-col slds-large-size_1-of-3 slds-small-size_1-of-2">
+                    <div>認定日</div>
+                </div>
+            </div> -->
+            <template for:each={parentList} for:item="parent">
+                <lightning-layout key={parent.parentId} multiple-rows="true" class="ex-box ex-box_theme slds-m-vertical_small">
+                    <lightning-layout-item size="12" class="ex-text_bold">
+                        氏名
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" class="slds-m-bottom_x-small">
+                        {parent.shimei}
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" class="ex-text_bold">
+                        認定結果
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" class="ex-text_bold">
+                        認定日
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6">
+                        {parent.shoninKekka}
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6">
+                        {parent.ninteiTsuchishoHakkoDate}
+                    </lightning-layout-item>
+
+                    <lightning-layout-item size="12" class="slds-m-top_medium slds-text-align_center ex-text_bold ex-text-color_brand ex-shinsei-ichiran-border_dotted">
+                        通知書ダウンロード
+                    </lightning-layout-item>
+
+                    <lightning-layout-item size="12" class="ex-shinsei-ichiran-border_dotted">
+                        <template for:each={parent.fileList} for:item="file">
+                            <div key={file.contentVersionId}>
+                                <lightning-button
+                                    lwc:if={parent.isDownload}
+                                    variant="base"
+                                    label={file.label}
+                                    onclick={tsuchishoDownload}
+                                    data-id={file.contentVersionId}
+                                ></lightning-button>
+                            </div>
+                        </template>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" class="slds-p-top_medium slds-text-align_center">
+                        <template if:true={parent.isNotShometsu}>
+                            <lightning-button
+                                lwc:if={parent.isNintei}
+                                variant="brand"
+                                label="受給事由消滅届の手続き"
+                                onclick={goJukyuJiyuShometsuTodoke}
+                                data-id={parent.parentId}
+                            ></lightning-button>
+                        </template>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <div class="slds-col slds-large-size_1-of-1 ">
+                <button
+                    variant="brand-outline"
+                    class="slds-button slds-size_full ex-button_outline"
+                    onclick={goBack}
+                >戻る</button>
+            </div>
+        </div>
+    </div>
+</template>

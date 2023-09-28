@@ -1,0 +1,228 @@
+<template>
+	<template lwc:if={isLoading}>
+		<lightning-spinner size="large"></lightning-spinner>
+	</template>
+	<template lwc:else>
+
+		<div class="slds-text-align_center ex-text-heading_large ex-text-color_brand slds-m-bottom_medium">
+			<template lwc:if={isSiteModeSatoya}>対象者・認定請求者</template><template lwc:else>対象者</template>(子供)の一覧
+		</div>
+
+		<!-- 対象児童単位のループ -->
+		<template for:each={taishoJidoList} for:item="taishoJido">
+			<lightning-card key={taishoJido.Id} class="ex-taisho-jido-card">
+
+				<lightning-layout multiple-rows="true" vertical-align="center" class="slds-p-horizontal_large">
+					<lightning-layout-item size="12">
+						<p class="slds-text-align_center ex-text-heading_large slds-m-bottom_small">{taishoJido.Shimei}</p>
+					</lightning-layout-item>
+
+					<!-- 対象児童の情報 -->
+					<lightning-layout-item size="12">
+						<lightning-layout multiple-rows="true" class="ex-layout-m-vertical">
+							<lightning-layout-item size="12" class="ex-sub-title">
+								<p><template lwc:if={isSiteModeSatoya}>対象者・認定請求者</template><template lwc:else>対象者</template>(子供)情報</p>
+							</lightning-layout-item>
+
+							<lightning-layout-item size="6" class="ex-text_bold">
+								{taishoJidoLbl.Shimei__c}
+							</lightning-layout-item>
+							<lightning-layout-item size="6">
+								{taishoJido.Shimei}
+							</lightning-layout-item>
+
+							<lightning-layout-item size="6" class="ex-text_bold">
+								{taishoJidoLbl.ShimeiFurigana__c}
+							</lightning-layout-item>
+							<lightning-layout-item size="6">
+								{taishoJido.ShimeiFurigana}
+							</lightning-layout-item>
+							<lightning-layout-item size="12" class="slds-p-top_medium">
+								<p lwc:if={taishoJido.needKazokuKakuninFile} class="ex-text-color_destructive ex-text_bold">{label.EX_TJD_NeedKazokuKakuninFile}</p>
+							</lightning-layout-item>
+
+							<lightning-layout-item size="12" class="slds-p-horizontal_xx-large slds-p-vertical_medium">
+								<lightning-layout>
+									<lightning-layout-item size="1"></lightning-layout-item>
+									<lightning-layout-item size="10">
+										<button
+											onclick={goNyuryoku}
+											title="対象者情報の表示/編集"
+											class="slds-button slds-p-vertical_xx-small slds-size_full ex-button_outline"
+											data-id={taishoJido.Id}
+										><template lwc:if={isSiteModeSatoya}>対象者・認定請求者</template><template lwc:else>対象者</template>情報の表示/編集</button>
+									</lightning-layout-item>
+									<lightning-layout-item size="1"></lightning-layout-item>
+								</lightning-layout>
+							</lightning-layout-item>
+						</lightning-layout>
+					</lightning-layout-item>
+
+					<!-- 申立書 -->
+					<lightning-layout-item size="12" lwc:if={taishoJido.needMoushitate}>
+						<lightning-layout multiple-rows="true" class="ex-layout-m-vertical">
+							<lightning-layout-item size="12" class="ex-sub-title">
+								<p>申立書</p>
+							</lightning-layout-item>
+							<lightning-layout-item size="12" lwc:if={taishoJido.IsKokennin}>
+								{taishoJidoLbl.Moushitate_KokenninCheck__c}
+							</lightning-layout-item>
+							<lightning-layout-item size="12" lwc:if={taishoJido.IsBekkyo}>
+								{taishoJidoLbl.Moushitate_BekkyoKango__c}
+							</lightning-layout-item>
+							<lightning-layout-item size="12" lwc:if={taishoJido.IsRyugaku}>
+								{taishoJidoLbl.Moushitate_KaigaiRyugakuCheck__c}
+							</lightning-layout-item>
+							<lightning-layout-item size="12" lwc:if={taishoJido.IsRikon}>
+								{taishoJidoLbl.Moushitate_RikonKyogiCheck__c}
+							</lightning-layout-item>
+							<lightning-layout-item size="12" lwc:if={taishoJido.IsFuboSitei}>
+								{taishoJidoLbl.Moushitate_FuboSiteishaCheck__c}
+							</lightning-layout-item>
+							<lightning-layout-item size="12" lwc:if={taishoJido.IsBetsuJusho}>
+								{taishoJidoDvLbl.Moushitate_BetsuJushoCheck__c}
+							</lightning-layout-item>
+
+							<lightning-layout-item size="12" class="slds-p-top_medium">
+								<p lwc:if={taishoJido.isNotMoushitateFinished} class="ex-text-color_destructive ex-text_bold">{label.EX_TJD_IsNotMoushitateFinished}</p>
+								<p lwc:if={taishoJido.needMoushitateFile} class="ex-text-color_destructive ex-text_bold">{label.EX_TJD_NeedMoushitateFile}</p>
+							</lightning-layout-item>
+
+							<lightning-layout-item size="12" class="slds-p-horizontal_xx-large slds-p-vertical_medium">
+								<lightning-layout>
+									<lightning-layout-item size="1"></lightning-layout-item>
+									<lightning-layout-item size="10">
+										<button
+											onclick={goMoushitate}
+											title="申立書の表示/編集"
+											class="slds-button slds-p-vertical_xx-small slds-size_full ex-button_outline"
+											data-id={taishoJido.Id}
+										>申立書の表示/編集</button>
+									</lightning-layout-item>
+									<lightning-layout-item size="1"></lightning-layout-item>
+								</lightning-layout>
+							</lightning-layout-item>
+						</lightning-layout>
+					</lightning-layout-item>
+
+					<!-- 受取口座区分 -->
+					<lightning-layout-item size="12">
+						<lightning-layout multiple-rows="true" class="ex-layout-m-vertical">
+							<lightning-layout-item size="12" class="ex-sub-title">
+								<p>振込口座</p>
+							</lightning-layout-item>
+
+							<template lwc:if={taishoJido.isNotKozaJohoFinished}></template>
+							<template lwc:else>
+								<template lwc:if={taishoJido.isSelectedTaishosha}>
+									<template lwc:if={taishoJido.isYucho}>
+										<lightning-layout-item size="6" class="ex-text_bold">
+											金融機関名
+										</lightning-layout-item>
+										<lightning-layout-item size="6">
+											ゆうちょ銀行
+										</lightning-layout-item>
+									</template>
+
+									<template lwc:else>
+										<lightning-layout-item size="6" class="ex-text_bold">
+											金融機関名
+										</lightning-layout-item>
+										<lightning-layout-item size="6">
+											{taishoJido.KinyuKikan}
+										</lightning-layout-item>
+
+										<lightning-layout-item size="6" class="ex-text_bold">
+											店名
+										</lightning-layout-item>
+										<lightning-layout-item size="6">
+											{taishoJido.Shiten}
+										</lightning-layout-item>
+									</template>
+								</template>
+								<template lwc:else>
+									<lightning-layout-item size="6" class="ex-text_bold">
+										受取口座
+									</lightning-layout-item>
+									<lightning-layout-item size="6">
+										申請者の口座
+									</lightning-layout-item>
+								</template>
+							</template>
+
+							<lightning-layout-item size="12" class="slds-p-top_medium">
+								<p lwc:if={taishoJido.isNotSeikyushaKozaFilled} class="ex-text-color_destructive ex-text_bold">{label.EX_TJD_IsNotSeikyushaKozaJohoFinished}</p>
+								<p lwc:if={taishoJido.isNotKozaJohoFinished} class="ex-text-color_destructive ex-text_bold">{label.EX_TJD_IsNotKozaJohoFinished}</p>
+								<p lwc:if={taishoJido.needKozaKakuninFile} class="ex-text-color_destructive ex-text_bold">{label.EX_TJD_NeedKozaKakuninFile}</p>
+							</lightning-layout-item>
+
+							<lightning-layout-item size="12" class="slds-p-horizontal_xx-large slds-p-vertical_medium">
+								<lightning-layout>
+									<lightning-layout-item size="1"></lightning-layout-item>
+									<lightning-layout-item size="10">
+										<button
+											onclick={goKoza}
+											title="口座情報の表示/編集"
+											class="slds-button slds-p-vertical_xx-small slds-size_full ex-button_outline"
+											data-id={taishoJido.Id}
+										>口座情報の表示/編集</button>
+									</lightning-layout-item>
+									<lightning-layout-item size="1"></lightning-layout-item>
+								</lightning-layout>
+							</lightning-layout-item>
+						</lightning-layout>
+					</lightning-layout-item>
+				</lightning-layout>
+
+				<div slot="footer" class="ex-card_footer">
+					<lightning-layout>
+						<lightning-layout-item size="12" class="slds-p-horizontal_xx-large slds-p-vertical_medium">
+							<lightning-layout>
+								<lightning-layout-item size="1"></lightning-layout-item>
+								<lightning-layout-item size="10">
+									<button
+										onclick={procDelete}
+										title="対象者の削除"
+										class="slds-button slds-size_full slds-p-vertical_xx-small ex-button_delete"
+										data-id={taishoJido.Id}
+										data-name={taishoJido.Shimei}
+									><template lwc:if={isSiteModeSatoya}>対象者・認定請求者</template><template lwc:else>対象者</template>の削除</button>
+								</lightning-layout-item>
+								<lightning-layout-item size="1"></lightning-layout-item>
+							</lightning-layout>
+						</lightning-layout-item>
+					</lightning-layout>
+				</div>
+			</lightning-card>
+		</template>
+
+		<template lwc:if={canAddTaishoJido}>
+			<lightning-layout>
+				<lightning-layout-item size="1"></lightning-layout-item>
+				<lightning-layout-item size="10">
+					<button
+						onclick={goInput}
+						title={addTaishoJidoButtonText}
+						class="slds-button slds-button_outline-brand ex-button-page_link slds-p-vertical_small slds-size_full"
+					>{addTaishoJidoButtonText}</button>
+				</lightning-layout-item>
+				<lightning-layout-item size="1"></lightning-layout-item>
+			</lightning-layout>
+		</template>
+
+		<div class="slds-p-top_large">
+			<template lwc:if={isNotAllDataFinished}>
+				<p class="ex-text-color_destructive ex-text_bold"><template lwc:if={isSiteModeSatoya}>対象者・認定請求者</template><template lwc:else>対象者</template>情報の入力が不足しています。</p>
+				<p class="ex-text-color_destructive ex-text_bold">赤字にて表示されている警告を確認し、情報を登録してください。</p>
+			</template>
+			<c-ex-footer
+				has-back
+				has-next
+				is-next-disabled={isNextDisabled}
+				next-label="最終確認へ進む"
+				onback={goBack}
+				onnext={goNext}
+			></c-ex-footer>
+		</div>
+	</template>
+</template>

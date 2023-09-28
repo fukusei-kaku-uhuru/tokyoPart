@@ -1,0 +1,163 @@
+<template>
+    <lightning-spinner lwc:if={isLoading} size="large"></lightning-spinner>
+    <div lwc:else>
+
+        <div class="slds-text-align_center slds-var-m-top_large">
+            <div class="ex-text-heading_large ex-text-color_brand">誓約・同意事項</div>
+
+            <div class="slds-var-m-top_small">
+                <p>本給付金の申請にあたっては、誓約・同意事項の全てに同意して頂く必要があります。</p>
+                <p>下記の誓約・同意事項を全てご確認いただき、問題なければ同意（チェック）してください。</p>
+            </div>
+
+            <div class="slds-var-m-top_small">
+                <p>
+                    各項目のチェック欄（□）に「
+                    <lightning-icon icon-name="utility:check" alternative-text="レ" size="x-small" class="ex-seiyaku-doui-icon"></lightning-icon>
+                    」を入れてください。
+                </p>
+            </div>
+        </div>
+
+        <div class="slds-var-m-top_small">
+
+            <div class="ex-box ex-box_theme">
+                <lightning-input
+                    type="checkbox"
+                    label="対象者は０１８サポート給付金の支給要件に該当しています。"
+                    checked={input.NinteiSeikyuSeiyaku_01}
+                    onchange={onchangeCheck01}
+                    disabled={isEditDisabled}
+                    class="ex-check-01 ex-input-checkbox ex-input-checkbox-scale_3-of-2"
+                ></lightning-input>
+                <div class="slds-var-m-top_small" onclick={onclickCheck01}>
+                    <p>対象者は以下の両方に該当する方です。</p>
+                    <p>①　2005年4月2日から2024年3月1日までに生まれた方</p>
+                    <p>②　都内に住所を有する方（原則※）</p>
+                    <p>※　修学・就労・療養等で一時的に都外に在住している場合等も対象です。</p>
+                </div>
+            </div>
+
+            <div class="ex-box ex-box_theme slds-var-m-top_x-small">
+                <lightning-input
+                    type="checkbox"
+                    label="都外からの転入状況、都外への転出(予定)について漏れなく申告します。実際の都内の在住期間が申告と異なることとなった場合には、都内に在住していない期間分の給付金を返還することに同意します。"
+                    checked={input.NinteiSeikyuSeiyaku_02}
+                    onchange={onchangeCheck02}
+                    disabled={isEditDisabled}
+                    class="ex-input-checkbox ex-input-checkbox-scale_3-of-2"
+                ></lightning-input>
+            </div>
+
+            <div class="ex-box ex-box_theme slds-var-m-top_x-small">
+                <lightning-input
+                    type="checkbox"
+                    label="０１８サポート給付金の支給要件の該当性を審査等するため、東京都が保有する認定請求者及び対象者に係る住民基本台帳情報等の公薄等や、対象者に関する児童手当の受給状況に係る情報、対象者に関する施設入所・里親委託等の状況に係る情報について、利用することに同意します。"
+                    checked={input.NinteiSeikyuSeiyaku_03}
+                    onchange={onchangeCheck03}
+                    disabled={isEditDisabled}
+                    class="ex-input-checkbox ex-input-checkbox-scale_3-of-2"
+                ></lightning-input>
+            </div>
+
+            <div class="ex-box ex-box_theme slds-var-m-top_x-small">
+                <lightning-input
+                    type="checkbox"
+                    label="上記で利用に同意いただいた公簿等で確認できない場合は、関係書類の提出を行います。"
+                    checked={input.NinteiSeikyuSeiyaku_04}
+                    onchange={onchangeCheck04}
+                    disabled={isEditDisabled}
+                    class="ex-input-checkbox ex-input-checkbox-scale_3-of-2"
+                ></lightning-input>
+            </div>
+
+            <div class="ex-box ex-box_theme slds-var-m-top_x-small">
+                <lightning-input
+                    type="checkbox"
+                    label="東京都が支給決定をした後、認定請求書の不備による振込不能等の事由により支払が完了しない場合、認定請求の修正を行うまでは給付金の受給ができないことに同意します。"
+                    checked={input.NinteiSeikyuSeiyaku_05}
+                    onchange={onchangeCheck05}
+                    disabled={isEditDisabled}
+                    class="ex-input-checkbox ex-input-checkbox-scale_3-of-2"
+                ></lightning-input>
+            </div>
+
+            <div class="ex-box ex-box_theme slds-var-m-top_x-small">
+                <lightning-input
+                    type="checkbox"
+                    label="対象者の代理人が認定請求を行う場合、給付金の支給認定後に、認定請求者が対象者の代理人としての要件に該当しなくなった場合、受給資格が消滅となることに同意します。"
+                    checked={input.NinteiSeikyuSeiyaku_12}
+                    onchange={onchangeCheck12}
+                    disabled={isEditDisabled}
+                    class="ex-input-checkbox ex-input-checkbox-scale_3-of-2"
+                ></lightning-input>
+            </div>
+
+            <div class="ex-box ex-box_theme slds-var-m-top_x-small">
+                <lightning-input
+                    type="checkbox"
+                    label="認定請求者が現に対象者を監護していないことが明らかになった場合は、認定が取消となることに同意します。令和5年度の給付金の受給にあたっては、令和5年度分の給付金の認定請求締切日までの間に、対象者を監護する別の者から配偶者の暴力を理由に避難している旨の申出とともに認定請求がありその者が認定された場合は、既に給付金を受給している場合でも、認定が取り消され、給付金を返還することに同意します。"
+                    checked={input.NinteiSeikyuSeiyaku_07}
+                    onchange={onchangeCheck07}
+                    disabled={isEditDisabled}
+                    class="ex-input-checkbox ex-input-checkbox-scale_3-of-2"
+                ></lightning-input>
+            </div>
+
+            <div class="ex-box ex-box_theme slds-var-m-top_x-small">
+                <lightning-input
+                    type="checkbox"
+                    label="給付金の支給認定後、対象者が里親等に委託された場合や児童福祉施設等に入所した場合は、認定資格が取消となることに同意します。"
+                    checked={input.NinteiSeikyuSeiyaku_11}
+                    onchange={onchangeCheck11}
+                    disabled={isEditDisabled}
+                    class="ex-input-checkbox ex-input-checkbox-scale_3-of-2"
+                ></lightning-input>
+            </div>
+
+            <div class="ex-box ex-box_theme slds-var-m-top_x-small">
+                <lightning-input
+                    type="checkbox"
+                    label="０１８サポート給付金の認定請求の支給要件の該当性等の審査にあたり、都が委託事業者に認定請求者や対象者に係る情報を渡すことに同意します。委託事業者が変更となる場合は新たな委託事業者に、認定請求者や対象者の情報が引き継がれることに同意します。"
+                    checked={input.NinteiSeikyuSeiyaku_08}
+                    onchange={onchangeCheck08}
+                    disabled={isEditDisabled}
+                    class="ex-input-checkbox ex-input-checkbox-scale_3-of-2"
+                ></lightning-input>
+            </div>
+
+            <div class="ex-box ex-box_theme slds-var-m-top_x-small">
+                <lightning-input
+                    type="checkbox"
+                    label="認定請求者及び対象者は、暴力団員、または暴力団関係者ではありません。"
+                    checked={input.NinteiSeikyuSeiyaku_09}
+                    onchange={onchangeCheck09}
+                    disabled={isEditDisabled}
+                    class="ex-input-checkbox ex-input-checkbox-scale_3-of-2"
+                ></lightning-input>
+            </div>
+
+            <div class="ex-box ex-box_theme slds-var-m-top_x-small">
+                <lightning-input
+                    type="checkbox"
+                    label="誓約・同意事項に反する事実や、申請にあたって虚偽や事実と異なる点があったことが明らかになった場合には、給付金を返還することに同意します。"
+                    checked={input.NinteiSeikyuSeiyaku_10}
+                    onchange={onchangeCheck10}
+                    disabled={isEditDisabled}
+                    class="ex-input-checkbox ex-input-checkbox-scale_3-of-2"
+                ></lightning-input>
+            </div>
+
+        </div>
+
+        <div class="slds-var-m-top_large">
+            <c-ex-footer
+                has-next
+                has-back
+                is-next-disabled={isNextDisabled}
+                onnext={goNext}
+                onback={goBack}
+            ></c-ex-footer>
+        </div>
+    </div>
+</template>

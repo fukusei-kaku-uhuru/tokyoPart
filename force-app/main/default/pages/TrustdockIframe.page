@@ -1,0 +1,78 @@
+<apex:page applyBodyTag="false" applyHtmlTag="false" showHeader="false" controller="TrustDockController">
+	<html>
+		<head>
+			<apex:slds />
+			<apex:stylesheet value="{!$Resource.ExStyleSheet}" />
+			<script src='{!trustdockUploderCdn}'></script>
+			<script>
+				window.onload = () => {
+					// iframeでの表示でなければ案内文を表示
+					if(window == window.parent){
+						const information = document.querySelector('#information');
+						information.classList.remove('slds-hide');
+
+					} else {
+						// 自動でモーダルを開く処理の実行
+						autoOpen();
+					}
+				};
+
+				var lexCommunityOrigin = '{!lexCommunityOrigin}';
+
+				const trustdock = new Trustdock({
+					publicId: '{!$CurrentPage.parameters.publicId}',
+					plans: [
+						{
+							id: '{!trustdockApiPlanId}'
+						}
+					],
+					openerSelector: '.opener'
+				});
+
+				const documentsubmittedAction = () => {
+					window.parent.postMessage('completed', lexCommunityOrigin);
+				}
+
+				const completedAction = () => {
+					window.parent.postMessage('completed', lexCommunityOrigin);
+				}
+
+				const canceledAction = () => {
+					window.parent.postMessage('close', lexCommunityOrigin);
+				}
+
+				// インスタンスの生成完了後に自動でモーダルを開く処理
+				const autoOpen = () => {
+					if (trustdock.isLoaded) {
+						trustdock.open();
+					} else {
+						trustdock.on('loaded', () => {
+							trustdock.open();
+						})
+					}
+				}
+
+
+
+				//// イベント受け取った場合の処理
+				// 身元確認書類の提出が完了した場合の処理を記述
+				// 例えば、提出後モーダルを閉じないユーザーに対して強制的に次のページへ遷移する等
+				trustdock.on('documentsubmitted', documentsubmittedAction)
+				// 身元確認書類の提出が完了しモーダルを閉じた場合の処理を記述
+				trustdock.on('completed',completedAction )
+				// 身元確認書類の提出をせずモーダルを閉じた場合の処理を記述
+				trustdock.on('canceled', canceledAction)
+			</script>
+		</head>
+		<body class="slds-scope ex-base" style="background-color:rgb(255, 247, 235)">
+
+			<!-- window.close()に失敗したとき用の案内文 -->
+			<div class="slds-grid slds-wrap slds-grid_align-center slds-hide" id="information" style="position:absolute;top:100px;width:100%;">
+				<div class="slds-text-align_center ex-text-heading_large slds-col slds-size_11-of-12" style="font-size:2.75rem;">
+					<p>公的個人認証の処理が完了しました。</p>
+					<p class="slds-m-top_medium">お手数ですが、現在のタブを閉じて申請ページに戻ってください。</p>
+				</div>
+			</div>
+		</body>
+	</html>
+</apex:page>

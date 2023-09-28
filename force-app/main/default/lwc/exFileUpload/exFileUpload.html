@@ -1,0 +1,255 @@
+<template>
+	<template lwc:if={isLoading}>
+		<lightning-spinner size="large"></lightning-spinner>
+	</template>
+
+	<div>
+		<div class="slds-text-align_center ex-text-heading_large ex-text-color_brand">本人確認書類アップロード</div>
+
+		<div class="slds-var-m-top_small">
+			<div class="slds-grid slds-wrap slds-grid_align-center">
+				<div class="slds-col slds-size_11-of-12">
+					<p>あらかじめ準備しておいた本人確認書類（<template lwc:if={isSiteModeSatoya}>一</template><template lwc:else>二</template>点）の画像をアップロードします。書類に個人番号や保険者番号等の記載がある場合には、マスキング（見えないように処理）が必要になります。</p>
+					<p>マスキングは、写真を撮る前に付箋やメモなどで該当部分を隠すか、撮影・スキャンした写真の該当部分をペイントソフトなどで塗りつぶしてください。</p>
+				</div>
+			</div>
+
+			<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+				<div class="slds-col slds-size_11-of-12">
+					<p>※提出の時点で有効なもの又は原則として発行日から3か月以内のものに限ります。</p>
+				</div>
+			</div>
+
+			<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+				<div class="slds-col slds-size_11-of-12">
+					<p>※裏面等に追記事項がある場合、その情報がわかるものもアップロードしてください。</p>
+				</div>
+			</div>
+
+			<div lwc:if={isSiteModeDv} class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+				<div class="slds-col slds-size_11-of-12 ex-text_bold ex-text-heading_small">
+					<p>※資料に認定請求者（申請者）または対象者（子供）の現住所が記載されている場合は、「区市町村名」より後の部分をマスキングしてください。</p>
+					<p>（例：東京都新宿区西新宿２－８－１　→　東京都新宿区）</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="slds-var-m-top_x-large">
+		<div class="slds-text-align_center">
+			<div class="ex-text-heading_large ex-text-color_brand">提出が必要な書類</div>
+
+			<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+				<div class="slds-col slds-size_11-of-12">
+					<p class="ex-text_bold">
+						<span class="ex-border-brand_bottom">
+							本人確認書類のうち、いずれか
+							<span class="ex-text-color_brand"><template lwc:if={isSiteModeSatoya}>一</template><template lwc:else>二</template>点</span>
+						</span>
+					</p>
+				</div>
+			</div>
+
+			<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+				<div class="slds-col slds-size_11-of-12">
+					<p>運転免許証、在留カード、パスポートなど</p>
+				</div>
+			</div>
+
+			<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+				<img src={ImgExFileUploadUrl} class="slds-col slds-size_10-of-12">
+			</div>
+		</div>
+	</div>
+
+	<div class="slds-var-m-top_x-large">
+		<div class="slds-text-align_center ex-text-heading_large ex-text-color_brand">アップロード方法</div>
+
+		<div class="slds-var-m-top_small">
+			<div class="slds-grid slds-wrap slds-grid_align-center">
+				<div class="slds-col slds-size_11-of-12">
+					<p>はじめに、本人確認書類の種類を選択してください。選択後、「ファイルをアップロード」ボタンが表示されます。</p>
+				</div>
+			</div>
+
+			<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+				<div class="slds-col slds-size_11-of-12">
+					<p>※書類に個人番号や保険者番号等の記載がある場合には、各項目のチェック欄（□）が表示されますので、マスキングを忘れずに行ってください。</p>
+					<p>すべてのチェック欄（□）に「
+						<lightning-icon icon-name="utility:check" alternative-text="レ" size="x-small" class="ex-seiyaku-doui-icon"></lightning-icon>
+						」を入れると、「ファイルをアップロード」ボタンが表示されます。
+					</p>
+				</div>
+			</div>
+
+			<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+				<div class="slds-col slds-size_11-of-12">
+					<p>「ファイルをアップロード」ボタンを押し、ご準備いただいた画像をアップロードしてください。</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="slds-var-m-top_x-large">
+		<div class="slds-grid slds-wrap slds-grid_align-center">
+			<lightning-combobox
+				value={selectedFileTeigiId}
+				options={fileTypeOptions}
+				onchange={onchangeFileType}
+				label="ファイル種別選択"
+				variant="label-hidden"
+				placeholder="選択してください"
+				class="slds-col slds-size_11-of-12 ex-combobox ex-text_normal"
+			></lightning-combobox>
+		</div>
+
+		<template lwc:if={selectedFileTeigiSetsumei}>
+			<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+				<div class="slds-col slds-size_11-of-12">
+					<p>{selectedFileTeigiSetsumei}</p>
+				</div>
+			</div>
+		</template>
+
+		<template lwc:if={visibleMyNumber}>
+			<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+				<div class="slds-col slds-size_11-of-12">
+					<div class="slds-box slds-box_small slds-theme_default ex-border-around_thin">
+						<lightning-input
+							checked={checkedMyNumberOmote}
+							type="checkbox"
+							label="表面のみを添付しました。"
+							onchange={onchangeMyNumberOmote}
+							class="ex-input-checkbox ex-input-checkbox-scale_3-of-2"
+						></lightning-input>
+					</div>
+				</div>
+			</div>
+		</template>
+
+		<template lwc:if={visibleKenkoHoken}>
+			<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+				<div class="slds-col slds-size_11-of-12">
+					<div class="slds-text-align_center ex-text_bold ex-text-heading_small">
+						画像の通り、マスキングして提出してください。
+					</div>
+				</div>
+			</div>
+			<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+				<img src={ImgExMaskingKenkoHokenUrl} class="slds-col slds-size_8-of-12">
+			</div>
+			<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+				<div class="slds-col slds-size_11-of-12">
+					<div class="slds-box slds-box_small slds-theme_default ex-border-around_thin">
+						<lightning-input
+							checked={checkedKenkoHokenMask}
+							type="checkbox"
+							label="該当箇所のマスキングを行いました。"
+							name="mask2"
+							onchange={onchangeKenkoHokenMask}
+							class="ex-input-checkbox ex-input-checkbox-scale_3-of-2"
+						></lightning-input>
+					</div>
+				</div>
+			</div>
+		</template>
+
+		<template lwc:if={visibleJuminHyoMask}>
+			<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+				<div class="slds-col slds-size_11-of-12">
+					<div class="slds-box slds-box_small slds-theme_default ex-border-around_thin">
+						<lightning-input
+							checked={checkedJuminHyoMask}
+							type="checkbox"
+							label="マイナンバー（個人番号）・住民票コードが記載されている場合には、マスキングして提出してください。"
+							onchange={onchangeJuminHyoMask}
+							class="ex-input-checkbox ex-input-checkbox-scale_3-of-2"
+						></lightning-input>
+					</div>
+				</div>
+			</div>
+		</template>
+
+		<template lwc:if={visibleAddressMask}>
+			<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+				<div class="slds-col slds-size_11-of-12">
+					<div class="slds-box slds-box_small slds-theme_default ex-border-around_thin">
+						<lightning-input
+							checked={checkedAddressMask}
+							type="checkbox"
+							label="住所の番地以降の記載をマスキングしました。"
+							onchange={onchangeAddressMask}
+							class="ex-input-checkbox ex-input-checkbox-scale_3-of-2"
+						></lightning-input>
+					</div>
+				</div>
+			</div>
+		</template>
+
+		<template lwc:if={visibleUpload}>
+			<div class="slds-var-m-top_x-small slds-grid slds-wrap slds-grid_align-center">
+				<div class="slds-col slds-size_11-of-12" data-id="fileUploaderContainer">
+					<lightning-file-upload
+						accept={acceptExtensions}
+						record-id={recordId}
+						onuploadfinished={handleUploadFinished}
+						disabled={disableUpload}
+					></lightning-file-upload>
+				</div>
+			</div>
+		</template>
+
+		<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+			<div class="slds-col slds-size_11-of-12">
+				<p>※アップロードするファイルは以下の制限があります。</p>
+				<p>{extensionMessage}</p>
+				<p>{sizeMessage}</p>
+			</div>
+		</div>
+
+		<div class="slds-var-m-top_small slds-var-p-bottom_small slds-grid slds-wrap slds-grid_align-center">
+			<div class="slds-col slds-size_11-of-12">
+				<c-ex-file-list
+					content-version-id-list={contentVersionIdList}
+					onstartdelete={handleDeleteStarted}
+					onfinishdelete={handleDeleteFinished}
+				></c-ex-file-list>
+			</div>
+		</div>
+
+		<div lwc:if={isNextDisabled} class="slds-var-m-top_medium">
+			<div class="slds-text-align_center">
+				<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+					<div class="slds-col slds-size_11-of-12">
+						<p class="ex-text_bold">
+							<span class="ex-border-brand_bottom">
+								本人確認書類のうち、いずれか
+								<span class="ex-text-color_brand"><template lwc:if={isSiteModeSatoya}>一</template><template lwc:else>二</template>点</span>
+							</span>
+						</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+				<div class="slds-col slds-size_11-of-12">
+					<div class="ex-text-color_destructive ex-text_bold">
+						<p>※同じ本人確認書類を複数アップロードしても、一点と認められます。</p>
+						<p>※表面や裏面の記載がある書類は、両面をアップロードすることで、一点と認められます。</p>
+						<p>上記説明をご確認の上、画像をアップロードしてください。</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="slds-var-m-top_large">
+		<c-ex-footer
+			has-back
+			has-next
+			is-next-disabled={isNextDisabled}
+			onback={goBack}
+			onnext={goNext}
+		></c-ex-footer>
+	</div>
+</template>

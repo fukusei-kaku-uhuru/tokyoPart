@@ -1,0 +1,31 @@
+<template>
+	<template lwc:if={isLoading}>
+		<lightning-spinner size="large"></lightning-spinner>
+	</template>
+	<template lwc:else>
+		<div class="ex-text-heading_large slds-text-align_center ex-text-color_brand">利用規約等について</div>
+
+		<div class="slds-var-m-top_small">
+			<p>本給付金の申請にあたっては、下記の利用規約、プライバシーポリシー 、利用上の注意の内容に同意して頂く必要があります。</p>
+		</div>
+
+
+		<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+			<c-ex-riyo-kiyaku
+				class="slds-col slds-size_11-of-12 slds-m-bottom_small"
+				is-ippan={isSiteModeIppan}
+				is-satoya={isSiteModeSatoya}
+			></c-ex-riyo-kiyaku>
+			<c-ex-privacy-policy class="slds-col slds-size_11-of-12 slds-m-bottom_small"></c-ex-privacy-policy>
+			<c-ex-riyo-chui class="slds-col slds-size_11-of-12 slds-m-bottom_small"></c-ex-riyo-chui>
+		</div>
+
+		<div class="slds-var-m-top_large">
+			<c-ex-footer
+				has-next
+				next-label="上記に同意し、次へ進む"
+				onnext={goNext}
+			></c-ex-footer>
+		</div>
+	</template>
+</template>

@@ -1,0 +1,65 @@
+<template>
+	<template lwc:if={isLoading}>
+		<lightning-spinner size="large"></lightning-spinner>
+	</template>
+	<template lwc:else>
+
+		<div class="slds-text-align_center ex-text-heading_large ex-text-color_brand slds-m-bottom_medium">
+			振込口座情報の登録
+		</div>
+		<div class="slds-text-align_center slds-m-bottom_small">
+			振込口座を入力してください。
+		</div>
+		<div class="slds-text-align_center ex-text-color_destructive ex-text_bold slds-m-bottom_medium">
+			*必須項目です。
+		</div>
+
+		<div class="slds-var-m-top_x-large slds-p-vertical_x-small slds-text-align_center ex-box_white ex-text_bold">
+			<template lwc:if={isSiteModeSatoya}>子供(対象者・認定請求者)</template>
+			<template lwc:else>対象者(子供)</template>
+			：
+			<p class="slds-m-top_xx-small ex-text-heading_large">{kozaData.Shimei}</p>
+		</div>
+
+		<div class="slds-text-align_center slds-m-top_large">
+			東京都からの支払金については、<br>
+			下記の預金口座に振り込んでください。
+		</div>
+
+		<lightning-layout multiple-rows="true" class="slds-p-horizontal_small slds-m-top_medium">
+
+			<lightning-layout-item size="12" class="ex-box ex-box_theme slds-m-bottom_medium">
+				<lightning-radio-group
+					type="radio"
+					label="受取口座について"
+					options={kouzaKubunOptions}
+					value={kozaData.UketoriKouzaKubun}
+					data-id="UketoriKouzaKubun"
+					onchange={changeUketoriKouzaKubun}
+					required
+					disabled={kozaData.isDisabled}
+				>
+				</lightning-radio-group>
+			</lightning-layout-item>
+
+			<lightning-layout-item size="12" lwc:if={isSelectedTaishosha}>
+				<c-ex-koza-form
+					kfw={kozaData.kfw}
+					is-disabled={kozaData.isDisabled}
+					required="true"
+				></c-ex-koza-form>
+			</lightning-layout-item>
+
+		</lightning-layout>
+
+		<div class="slds-p-top_large">
+			<c-ex-footer
+				has-back
+				has-next
+				back-label="一覧へ戻る"
+				onback={goBack}
+				onnext={goNext}
+			></c-ex-footer>
+		</div>
+	</template>
+</template>

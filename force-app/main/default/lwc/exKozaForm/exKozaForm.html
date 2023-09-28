@@ -1,0 +1,223 @@
+<template>
+	<template lwc:if={isLoading}></template>
+	<template lwc:else>
+		<lightning-layout multiple-rows="true">
+
+			<lightning-layout-item size="12" class="ex-box ex-box_theme slds-m-bottom_large">
+				<lightning-radio-group
+					type="radio"
+					label="銀行の選択"
+					options={ginkoKubunOptions}
+					value={_kfw.GinkoKubun}
+					data-id="GinkoKubun"
+					onchange={changeInput}
+					required={required}
+					disabled={isDisabled}
+				>
+				</lightning-radio-group>
+			</lightning-layout-item>
+
+			<lightning-layout-item size="12">
+
+				<div class="slds-text-align_center ex-text-heading_medium slds-m-bottom_small">
+					振込口座
+				</div>
+				<div class="slds-m-bottom_small">
+					振込先金融機関は、全国銀行資金決済ネットワークを利用している、全国の金融機関の口座に限られますので、ご注意ください。
+				</div>
+
+				<!-- ゆうちょ銀行 -->
+				<template lwc:if={isYucho}>
+					<lightning-layout multiple-rows="true" class="ex-layout-m-vertical_medium">
+
+						<lightning-layout-item size="12" class="ex-text-color_destructive ex-text_bold">
+							<p>※必ずご確認ください※</p>
+							<p>ゆうちょ銀行の口座情報を入力する際はゆうちょ銀行の記号・番号を記載ください。</p>
+							<p>振込用の口座番号は記載しないようにしてください。</p>
+						</lightning-layout-item>
+
+						<lightning-layout-item size="12">
+							<lightning-combobox
+								label={label.EX_TJD_YuchoShumoku}
+								value={_kfw.YuchoBunrui}
+								data-id="YuchoBunrui"
+								options={yuchoBunruiOptions}
+								placeholder=""
+								onchange={changeInput}
+								required={required}
+								disabled={isDisabled}
+								class="ex-text_normal"
+							>
+							</lightning-combobox>
+						</lightning-layout-item>
+
+						<lightning-layout-item size="12">
+							<lightning-input
+								type="text"
+								label="ゆうちょ記号"
+								value={_kfw.YuchoKigo}
+								data-id="YuchoKigo"
+								onchange={changeInput}
+								placeholder="12345"
+								required={required}
+								max-length="5"
+								pattern="^[0-9]{5}$"
+								message-when-pattern-mismatch="数字5桁で入力してください。"
+								disabled={isDisabled}
+							>
+							</lightning-input>
+						</lightning-layout-item>
+
+						<lightning-layout-item size="12">
+							<lightning-input
+								type="text"
+								label="ゆうちょ番号"
+								value={_kfw.YuchoBango}
+								data-id="YuchoBango"
+								onchange={changeInput}
+								placeholder="12345678"
+								required={required}
+								max-length="8"
+								pattern="^[0-9]+$"
+								message-when-pattern-mismatch="数字のみで入力してください。"
+								disabled={isDisabled}
+							>
+							</lightning-input>
+						</lightning-layout-item>
+
+						<lightning-layout-item size="12">
+							<lightning-input
+								type="text"
+								label="口座名義"
+								value={_kfw.YuchoKouzaMeigi}
+								data-id="YuchoKouzaMeigi"
+								onchange={changeInput}
+								placeholder="ﾄｳｷﾖｳ ﾒｲｷﾞ"
+								required={required}
+								max-length="255"
+								pattern="^[ｱ-ﾟ0-9A-Z\(\)\.\/\- ]+$"
+								message-when-pattern-mismatch="口座名義は半角カナ（ｦを除く大文字）/数字/英大文字/空欄(半角)/一部記号（().-/）のみ入力可能です。"
+								disabled={isDisabled}
+							>
+							</lightning-input>
+							<p class="ex-text-color_neutral">半角カナで、氏名の間は空欄(半角)を入れてご入力ください</p>
+							<p class="ex-text-color_neutral">小文字は大文字で入力してください （例）ﾄｳｷｮｳ ﾒｲｷﾞ → ﾄｳｷﾖｳ ﾒｲｷﾞ</p>
+						</lightning-layout-item>
+					</lightning-layout>
+				</template>
+
+				<!-- その他の銀行 -->
+				<template lwc:else>
+					<lightning-layout multiple-rows="true" class="ex-layout-m-vertical_medium">
+						<template lwc:if={isDisabled}>
+							<lightning-layout-item size="12">
+								<lightning-input
+									type="text"
+									label="金融機関"
+									value={_kfw.KinyuKikanDispName}
+									disabled
+								></lightning-input>
+							</lightning-layout-item>
+
+							<lightning-layout-item size="12">
+								<lightning-input
+									type="text"
+									label="支店"
+									value={_kfw.ShitenDispName}
+									disabled
+								></lightning-input>
+							</lightning-layout-item>
+						</template>
+						<template lwc:else>
+							<lightning-layout-item size="12">
+								<c-ex-custom-lookup
+									data-id="KinyuKikan"
+									obj-name="KinyuKikan__c"
+									add-field="KinyuKikanCode__c"
+									filter="KinyuKikan"
+									value={_kfw.KinyuKikan}
+									label="金融機関"
+									selected-name={_kfw.KinyuKikanDispName}
+									icon-name="standard:account"
+									onlookupselected={changeKinyuKikan}
+									required={required}
+								>
+								</c-ex-custom-lookup>
+								<p class="ex-text-color_neutral" if:false={isValueSelected}>金融機関名を入力することで、検索ができます</p>
+							</lightning-layout-item>
+
+							<lightning-layout-item size="12">
+								<c-ex-custom-lookup
+									data-id="Shiten"
+									obj-name="Shiten__c"
+									add-field="TempoCode__c"
+									filter="Shiten"
+									params={shitenParams}
+									value={_kfw.Shiten}
+									label="支店"
+									selected-name={_kfw.ShitenDispName}
+									icon-name="standard:account"
+									onlookupselected={changeShiten}
+									required={required}
+								>
+								</c-ex-custom-lookup>
+								<p class="ex-text-color_neutral" if:false={isValueSelected}>支店名を入力することで、検索ができます</p>
+							</lightning-layout-item>
+						</template>
+
+						<lightning-layout-item size="12">
+							<lightning-combobox
+								label="口座種別"
+								value={_kfw.Bunrui}
+								data-id="Bunrui"
+								options={bunruiOptions}
+								placeholder=""
+								onchange={changeInput}
+								required={required}
+								disabled={isDisabled}
+								class="ex-text_normal"
+							>
+							</lightning-combobox>
+						</lightning-layout-item>
+
+						<lightning-layout-item size="12">
+							<lightning-input
+								type="text"
+								label="口座番号"
+								value={_kfw.KouzaBangou}
+								data-id="KouzaBangou"
+								onchange={changeInput}
+								placeholder="1234567"
+								required={required}
+								max-length="7"
+								pattern="^[0-9]+$"
+								message-when-pattern-mismatch="数字のみで入力してください。"
+								disabled={isDisabled}
+							>
+							</lightning-input>
+						</lightning-layout-item>
+
+						<lightning-layout-item size="12">
+							<lightning-input
+								type="text"
+								label="口座名義"
+								value={_kfw.KouzaMeigi}
+								data-id="KouzaMeigi"
+								onchange={changeInput}
+								placeholder="ﾄｳｷﾖｳ ﾒｲｷﾞ"
+								required={required}
+								max-length="255"
+								pattern="^[ｱ-ﾟ0-9A-Z\(\)\.\/\- ]+$"
+								message-when-pattern-mismatch="口座名義は半角カナ（ｦを除く大文字）/数字/英大文字/空欄(半角)/一部記号（().-/）のみ入力可能です。"
+								disabled={isDisabled}
+							>
+							</lightning-input>
+							<p class="ex-text-color_neutral">半角カナで、氏名の間は空欄(半角)を入れてご入力ください</p>
+							<p class="ex-text-color_neutral">小文字は大文字で入力してください （例）ﾄｳｷｮｳ ﾒｲｷﾞ → ﾄｳｷﾖｳ ﾒｲｷﾞ</p>
+						</lightning-layout-item>
+					</lightning-layout>
+				</template>
+			</lightning-layout-item>
+		</lightning-layout>
+	</template>
+</template>

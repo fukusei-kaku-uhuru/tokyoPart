@@ -1,0 +1,124 @@
+<template>
+
+    <div class="slds-grid slds-wrap slds-grid_align-center">
+        <div class="slds-col slds-size_1-of-1 slds-large-size_1-of-2">
+            <div class="ex-base" lwc:if={hasStyleLoaded}>
+                <lightning-spinner lwc:if={isLoading} size="large"></lightning-spinner>
+                <div lwc:else>
+                    <template lwc:if={displayShinseiIchiran}>
+                        <div class="slds-text-align_center">
+                            <div class="ex-text-heading_large ex-text-color_brand slds-m-bottom_medium">申請履歴</div>
+                        </div>
+                        <div lwc:if={isParentListEmpty}>
+                            <div class="slds-var-m-top_large">
+                                <div class="slds-text-align_center">
+                                    <p>データがありません。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <template lwc:else>
+                            <div class="slds-text-align_center slds-m-bottom_small">
+                                <p>申請途中から再開する場合は、申請を再開したい申請の「編集」を押下してください。</p>
+                            </div>
+                            <template for:each={parentList} for:item="parent">
+                                <div key={parent.parentId} class="slds-var-m-top_large ex-box ex-box_theme">
+                                    <div>
+                                        <div class="slds-grid slds-wrap ex-text_bold">
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <p class="slds-hyphenate">受付番号</p>
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <p class="slds-hyphenate">ステータス</p>
+                                            </div>
+                                        </div>
+                                        <div class="slds-var-m-top_x-small slds-grid slds-wrap">
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <p class="slds-hyphenate">{parent.parentNo}</p>
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <p class="slds-hyphenate">{parent.status}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="slds-var-m-top_medium">
+                                        <div class="slds-text-align_center ex-text_bold ex-text-color_brand"><template lwc:if={isSiteModeSatoya}>対象者・認定請求者</template><template lwc:else>対象者</template>(子供)</div>
+                                        <div class="slds-var-m-top_small slds-grid slds-wrap ex-text_bold ex-shinsei-ichiran-border_dotted">
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <p class="slds-hyphenate">氏名</p>
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <p class="slds-hyphenate">認定結果</p>
+                                            </div>
+                                        </div>
+                                        <template for:each={parent.childList} for:item="child">
+                                            <div key={child.childId} class="slds-var-m-top_x-small slds-grid slds-wrap ex-shinsei-ichiran-border_dotted">
+                                                <div class="slds-col slds-size_1-of-2">
+                                                    <p class="slds-hyphenate">{child.childName}</p>
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2">
+                                                    <p class="slds-hyphenate">{child.shoninKekka}</p>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                    <div class="slds-var-m-top_medium">
+                                        <div class="slds-text-align_center ex-text_bold ex-text-color_brand ex-shinsei-ichiran-border_dotted">通知書</div>
+                                        <div class="slds-var-m-top_x-small slds-var-p-bottom_x-small slds-grid slds-wrap slds-grid_vertical-align-center ex-shinsei-ichiran-border_dotted">
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <p class="slds-hyphenate ex-text_bold">認定通知書</p>
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <button
+                                                    onclick={goShinseiResults}
+                                                    data-id={parent.parentId}
+                                                    class="slds-button slds-var-p-horizontal_medium ex-button_next"
+                                                >一覧へ</button>
+                                            </div>
+                                        </div>
+                                        <div class="slds-var-m-top_x-small slds-var-p-bottom_x-small slds-grid slds-wrap slds-grid_vertical-align-center ex-shinsei-ichiran-border_dotted">
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <p class="slds-hyphenate ex-text_bold">不備のお知らせ</p>
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <button
+                                                    onclick={goFubiTsuchi}
+                                                    data-id={parent.parentId}
+                                                    class="slds-button slds-var-p-horizontal_medium ex-button_next"
+                                                >一覧へ</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="slds-var-m-top_medium slds-grid slds-wrap slds-grid_align-center">
+                                        <div class="slds-col slds-size_1-of-1">
+                                            <button
+                                                lwc:if={parent.isEditDisabled}
+                                                onclick={openSaisyuKakunin}
+                                                data-id={parent.parentId}
+                                                class="slds-button slds-size_full ex-button_outline"
+                                            >申請情報の確認</button>
+                                            <button
+                                                lwc:else
+                                                onclick={goEditShinsei}
+                                                data-id={parent.parentId}
+                                                class="slds-button slds-size_full ex-button_outline"
+                                            >編集</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+                        </template>
+                    </template>
+                    <!-- 最終確認 -->
+                    <c-ex-saisyu-kakunin
+                        lwc:else
+                        onsubmit={closeSaisyuKakunin}
+                        record-id={selectedId}
+                    ></c-ex-saisyu-kakunin>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>

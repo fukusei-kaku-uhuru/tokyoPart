@@ -1,0 +1,42 @@
+<template>
+    <lightning-modal-body>
+		<div class="slds-var-p-around_small">
+			<lightning-formatted-text value={content}></lightning-formatted-text>
+			<div lwc:if={isConfirm} class="slds-var-m-top_large slds-text-align_center">
+
+				<!-- モバイル時表示 -->
+				<lightning-layout class="slds-hide_medium">
+					<lightning-layout-item size="3"></lightning-layout-item>
+					<lightning-layout-item size="6">
+						<button
+							onclick={handleCancel}
+							class="slds-button slds-var-p-horizontal_medium ex-button_back"
+						>キャンセル</button>
+					</lightning-layout-item>
+					<lightning-layout-item size="3">
+						<button
+							onclick={handleOk}
+							class="slds-button slds-var-p-horizontal_medium ex-button_next"
+						>OK</button>
+					</lightning-layout-item>
+				</lightning-layout>
+
+				<!-- PC時表示 -->
+				<lightning-layout class="slds-show_medium">
+					<lightning-layout-item size="6" class="slds-var-p-horizontal_small">
+						<button
+							onclick={handleCancel}
+							class="slds-button slds-size_full slds-var-p-vertical_xx-small ex-button_back"
+						>キャンセル</button>
+					</lightning-layout-item>
+					<lightning-layout-item size="6" class="slds-var-p-horizontal_small">
+						<button
+							onclick={handleOk}
+							class="slds-button slds-size_full slds-var-p-vertical_xx-small ex-button_next"
+						>OK</button>
+					</lightning-layout-item>
+				</lightning-layout>
+			</div>
+		</div>
+	</lightning-modal-body>
+</template>

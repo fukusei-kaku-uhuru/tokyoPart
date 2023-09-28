@@ -1,0 +1,30 @@
+<template>
+    <div class="underline"><a href="#" class="info"></a>あなたへのお知らせ</div>
+    <br>
+    <table class="slds-table slds-table_bordered" aria-label="">
+        <thead>
+            <tr class="">
+                <th class="" scope="col" style="background-color:rgb(255, 247, 235)">
+                    公開日
+                </th>
+                <th class="" scope="col" style="background-color:rgb(255, 247, 235)">
+                    タイトル
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <template  for:each={dispList} for:item="data" for:index="idx">
+                <tr class="" key={data.dataId}>
+                <td style="background-color:rgb(255, 247, 235)">
+                    {data.kokaiKaishiDate}
+                </td>
+                <td style="background-color:rgb(255, 247, 235)">
+                    <lightning-button variant="base" label={data.title} onclick={goOshirase} data-id={data.dataId}></lightning-button>
+                </td>
+            </tr>
+            </template>
+        </tbody>
+    </table>
+    &nbsp;&nbsp;&nbsp;&nbsp;<lightning-button variant="base" label="すべて表示" onclick={goAllData} ></lightning-button>
+    
+</template>

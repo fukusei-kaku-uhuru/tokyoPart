@@ -1,0 +1,49 @@
+<template>
+    <table class="slds-table slds-table_bordered ex-shinsei-ichiran-compact">
+        <thead>
+            <tr class="">
+                <th scope="col">
+                    受付番号
+                </th>
+                <th scope="col">
+                    ステータス
+                </th>
+				<th scope="col" class="slds-show_medium">
+                    対象児童数
+                </th>
+				<th scope="col">
+                    作成日
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <template for:each={shinseiList} for:item="shinsei">
+                <tr key={shinsei.parentId}>
+					<td>
+						<template lwc:if={shinsei.isEditDisabled}>
+							{shinsei.parentNo}
+						</template>
+						<template lwc:else>
+							<lightning-button
+								variant="base"
+								label={shinsei.parentNo}
+								onclick={goEditShinsei}
+								data-id={shinsei.parentId}
+							></lightning-button>
+						</template>
+					</td>
+					<td>
+						{shinsei.status}
+					</td>
+					<td class="slds-show_medium">
+						{shinsei.childrenSize}
+					</td>
+					<td>
+						{shinsei.createdDate}
+					</td>
+				</tr>
+            </template>
+        </tbody>
+    </table>
+    <lightning-button variant="base" class="slds-m-left_small" label="すべて表示" onclick={goAllData} ></lightning-button>
+</template>

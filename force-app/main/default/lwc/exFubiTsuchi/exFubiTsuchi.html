@@ -1,0 +1,34 @@
+<template>
+    <div class="slds-text-align_center">
+        <div class="slds-grid slds-wrap slds-box slds-var-m-vertical_small slds-align_absolute-center" style="max-width: 800px;">
+            <div class="slds-col slds-large-size_1-of-3 slds-small-size_1-of-2">
+                <div>氏名</div>
+            </div>
+            <div class="slds-col slds-large-size_1-of-3 slds-small-size_1-of-2">
+                <div>通知日</div>
+            </div>
+            <div class="slds-col slds-large-size_1-of-3 slds-small-size_1-of-2">
+            </div>
+        </div>
+        <template for:each={parentList} for:item="parent">
+            <div key={parent.parentId} class="slds-grid slds-wrap slds-box slds-var-m-vertical_small slds-align_absolute-center" style="max-width: 800px;">
+                <div class="slds-col slds-large-size_1-of-3 slds-small-size_1-of-2">
+                    <div>{parent.fubiTaishoshaShimei}</div>
+                </div>
+                <div class="slds-col slds-large-size_1-of-3 slds-small-size_1-of-2">
+                    <div>{parent.kofuDate}</div>
+                </div>
+                <div class="slds-col slds-large-size_1-of-3 slds-small-size_1-of-2">
+                    <lightning-button variant="base" label="詳細はこちら" onclick={goDetail} data-id={parent.parentId} ></lightning-button>
+                </div>
+            </div>
+        </template>
+        <div class="slds-col slds-large-size_1-of-1 ">
+            <lightning-button
+                variant="brand-outline"
+                label="戻る"
+                onclick={goBack}
+            ></lightning-button>
+        </div>
+    </div>
+</template>

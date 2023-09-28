@@ -1,0 +1,82 @@
+<template>
+	<template lwc:if={isLoading}>
+		<lightning-spinner size="large"></lightning-spinner>
+	</template>
+	<template lwc:else>
+
+		<div class="slds-text-align_center ex-text-heading_large ex-text-color_brand slds-m-bottom_medium">
+			受取口座確認書類アップロード
+		</div>
+
+		<template lwc:if={kozaData.isSelectedTaishosha}>
+
+			<div class="slds-m-bottom_medium">
+				受取口座を確認できる書類として金融機関名、支店名、店番号、預金の種別、口座番号、口座名義（カタカナの名義含む）がわかるものをご提出ください。
+			</div>
+			<div class="slds-text-align_center ex-text-heading_small ex-text_bold slds-m-bottom_small">
+				通帳、WEB通帳、キャッシュカードなど
+			</div>
+			<lightning-layout class="slds-m-bottom_small">
+				<lightning-layout-item size="4" class="slds-p-around_small">
+					<img src={imgSample1}>
+				</lightning-layout-item>
+				<lightning-layout-item size="4" class="slds-p-around_small">
+					<img src={imgSample2}>
+				</lightning-layout-item>
+				<lightning-layout-item size="4" class="slds-p-around_small">
+					<img src={imgSample3}>
+				</lightning-layout-item>
+			</lightning-layout>
+
+			<div class="slds-m-bottom_medium">
+				<p>※WEB通帳・ネットバンキングの場合は、画面のスクリーンショット画像をアップロードしてください。</p>
+			</div>
+			<div class="slds-m-bottom_medium">
+				<p>※キャッシュカードの場合は、カード表面の画像をアップロードしてください。</p>
+				<p>　また、クレジットカード一体型のキャッシュカードの場合、クレジットカード番号はマスキングしてください。</p>
+			</div>
+
+			<div class="slds-m-bottom_large slds-p-vertical_x-small slds-text-align_center ex-box_white ex-text_bold">
+				<template lwc:if={isSiteModeSatoya}>子供(対象者・認定請求者)</template>
+				<template lwc:else>対象者(子供)</template>
+				：
+				<p class="slds-m-top_xx-small ex-text-heading_large">{kozaData.Shimei}</p>
+			</div>
+
+			<lightning-layout multiple-rows="true" class="slds-p-horizontal_small">
+				<template lwc:if={kozaData.isDisabled}></template>
+				<lightning-layout-item size="12" lwc:else>
+					<h2>下記の条件に一致するもののみ、アップロード可能です。</h2>
+					<h2>{fileLimit.extensionMessage}</h2>
+					<h2>{fileLimit.sizeMessage}</h2>
+				</lightning-layout-item>
+
+				<lightning-layout-item size="12">
+					<c-ex-file-kit
+						options={kozaData.KozaOption}
+						record-id={taishoJidoId}
+						file-list={kozaShoruiList}
+						un-deletable={kozaData.isDisabled}
+						is-option-hidden
+						onfileupload={handleKozaUploaded}
+						onfiledelete={handleKozaDeleted}
+					></c-ex-file-kit>
+				</lightning-layout-item>
+
+			</lightning-layout>
+		</template>
+		<template lwc:else>
+			<div class="slds-text-align_center ex-text-heading_small">
+				<template lwc:if={isSiteModeSatoya}>認定請求援助者</template><template lwc:else>申請者</template>の口座を選択しているため、口座確認ファイルアップロードは不要です。
+			</div>
+		</template>
+
+		<div class="slds-p-top_large">
+			<c-ex-footer
+				has-next
+				next-label="入力を完了(一覧へ戻る)"
+				onnext={goBack}
+			></c-ex-footer>
+		</div>
+	</template>
+</template>

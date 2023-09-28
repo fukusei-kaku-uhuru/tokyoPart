@@ -1,0 +1,39 @@
+<template>
+	<div class="slds-var-m-bottom_large">
+		<div class="slds-progress ex-progress">
+			<ol class="slds-progress__list">
+				<template for:each={progressSteps} for:item="progressStep">
+					<template lwc:if={progressStep.isActive}>
+						<li key={progressStep.id} class="slds-progress__item slds-is-active">
+							<div class="slds-progress__marker ex-progress__marker">
+								<span class="slds-assistive-text">{progressStep.label}</span>
+							</div>
+						</li>
+					</template>
+					<template lwc:elseif={progressStep.isCompleted}>
+						<li key={progressStep.id} class="slds-progress__item slds-is-completed">
+							<lightning-icon
+								alternative-text={progressStep.label}
+								icon-name="utility:success"
+								size="x-small"
+								class="slds-progress__marker ex-progress__marker slds-progress__marker_icon"
+							></lightning-icon>
+						</li>
+					</template>
+					<template lwc:else>
+						<li key={progressStep.id} class="slds-progress__item">
+							<div class="slds-progress__marker ex-progress__marker">
+								<span class="slds-assistive-text">{progressStep.label}</span>
+							</div>
+						</li>
+					</template>
+				</template>
+			</ol>
+			<div class="slds-progress-bar slds-progress-bar_x-small ex-progress-bar" aria-valuemin="1" aria-valuemax={valueMax} aria-valuenow={valueNow} role="progressbar">
+				<span class="slds-progress-bar__value ex-progress-bar__value">
+					<span class="slds-assistive-text">{valueNow}</span>
+				</span>
+			</div>
+		</div>
+	</div>
+</template>

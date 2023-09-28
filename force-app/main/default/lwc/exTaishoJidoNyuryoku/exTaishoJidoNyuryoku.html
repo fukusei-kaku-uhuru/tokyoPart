@@ -1,0 +1,369 @@
+<template>
+	<template lwc:if={isLoading}>
+		<lightning-spinner size="large"></lightning-spinner>
+	</template>
+	<template lwc:else>
+
+		<div class="slds-text-align_center ex-text-heading_large ex-text-color_brand slds-m-bottom_medium">
+			<template lwc:if={isSiteModeSatoya}>子供(対象者・認定請求者)情報の登録</template>
+			<template lwc:else>対象者(子供)情報の登録</template>
+		</div>
+		<div class="slds-text-align_center slds-m-bottom_small">
+			<template lwc:if={isSiteModeSatoya}>対象者・認定請求者の情報を入力してください。</template>
+			<template lwc:else>対象者の情報を入力してください。</template>
+		</div>
+		<div class="slds-text-align_center ex-text-color_destructive ex-text_bold slds-m-bottom_medium">
+			*必須項目です。
+		</div>
+
+		<lightning-layout multiple-rows="true" class="slds-p-horizontal_small ex-layout-m-vertical_medium">
+
+			<!-- 対象児童情報 -->
+
+			<lightning-layout-item size="12" if:false={isSiteModeSatoya}>
+				<template lwc:if={taishoJidoData.isDisabled}>
+					<lightning-input
+						type="text"
+						label={taishoJidoLbl.TaishoshaKubun__c}
+						value={taishoJidoData.TaishoshaKubunName}
+						disabled
+					>
+					</lightning-input>
+				</template>
+				<template lwc:else>
+					<c-ex-custom-lookup
+						data-id="TaishoshaKubun"
+						obj-name="TaishoshaKubun__c"
+						filter="TaishoshaKubun"
+						params={taishoshaKubunParams}
+						value={taishoJidoData.TaishoshaKubun}
+						label="対象者区分（対象者区分を入力し、該当する区分を選択してください。）"
+						selected-name={taishoJidoData.TaishoshaKubunName}
+						icon-name="standard:account"
+						onlookupselected={changeTaishoshaKubun}
+						required="true"
+					>
+					</c-ex-custom-lookup>
+					<div class="ex-text-color_neutral slds-p-bottom_xx-small" if:false={isValueSelected}>
+						<p>
+							確認した対象者区分を入力することで、検索ができます
+						</p>
+						<p lwc:if={isSiteModeDv}>
+							A区分やC区分の方は、申請にあたり別ページからの登録や事前のご連絡が必要となるため、こちらのページから申請いただくことができません
+						</p>
+						<p lwc:else>
+							B区分やC区分の方は、申請にあたり別ページからの登録や事前のご連絡が必要となるため、こちらのページから申請いただくことができません
+						</p>
+					</div>
+				</template>
+
+				<a href={label.EX_TJD2_URL1} target="_blank" class="ex-text-link">対象者区分はこちらで確認してください</a>
+				<p class="ex-text-color_neutral">※対象者区分は、リンク先のページから「必要書類・申請方法（対象者区分）を確認」を押し、質問に答えることでご確認いただけます</p>
+				<p class="ex-text-color_neutral">※別のタブ（ウインドウ）が開きます。元の申請画面は閉じずにそのままにしてください</p>
+			</lightning-layout-item>
+
+			<lightning-layout-item size="12">
+				<lightning-input
+					type="text"
+					label={taishoJidoLbl.Shimei__c}
+					value={taishoJidoData.Shimei}
+					data-id="Shimei"
+					onchange={changeInput}
+					onblur={blurInputFullSpace}
+					max-length="255"
+					placeholder="東京　子供"
+					pattern="^(?=.*　)(?!.* ).*$"
+					message-when-pattern-mismatch="空欄(全角)を必ず含め、空欄(半角)は利用しないでください"
+					required
+					disabled={taishoJidoData.isDisabled}
+				>
+				</lightning-input>
+				<p class="ex-text-color_neutral">姓と名の間は空欄(全角)を入れてご入力ください</p>
+				<p class="ex-text-color_neutral">姓と名の区切りがない場合は、末尾にスペースをご入力ください</p>
+			</lightning-layout-item>
+
+			<lightning-layout-item size="12">
+				<lightning-input
+					type="text"
+					label={taishoJidoLbl.ShimeiFurigana__c}
+					value={taishoJidoData.ShimeiFurigana}
+					data-id="ShimeiFurigana"
+					onchange={changeInput}
+					onblur={blurInputFullSpace}
+					max-length="255"
+					placeholder="トウキョウ　コドモ"
+					pattern="^(?=.*　)(?!.* )[　ーァ-ヺ]*$"
+					message-when-pattern-mismatch="全角カナ、空欄(全角)のみ利用可能です。また、空欄(全角)を必ず含んでください。"
+					required={isRequiredFurigana}
+					disabled={taishoJidoData.isDisabled}
+				>
+				</lightning-input>
+				<p class="ex-text-color_neutral">全角カナで、姓と名の間は空欄(全角)を入れてご入力ください</p>
+				<p class="ex-text-color_neutral">姓と名の区切りがない場合は、末尾にスペースをご入力ください</p>
+			</lightning-layout-item>
+
+			<lightning-layout-item size="12">
+				<lightning-input
+					type="date"
+					label={taishoJidoLbl.SeinenGappiDate__c}
+					value={taishoJidoData.SeinenGappiDate}
+					data-id="SeinenGappiDate"
+					onchange={changeInput}
+					placeholder="2023/09/01"
+					min="2005-04-02"
+					message-when-range-underflow="生年月日は2005/04/02より後の日付を入力してください。"
+					max="2024-03-01"
+					message-when-range-overflow="生年月日は2024/03/01より前の日付を入力してください。"
+					required
+					disabled={taishoJidoData.isDisabled}
+				>
+				</lightning-input>
+				<p>ご利用の機種やOSによっては、カレンダーの表示が異なります</p>
+				<p>年月が表示されている部分を押していただくことで、年や月単位での選択が可能な場合がございます</p>
+			</lightning-layout-item>
+
+				<!-- 18歳の対象児童を含んでいる場合、請求者区分選択を表示 -->
+				<template lwc:if={taishoJidoNyuryokuData.isFukumu18}>
+
+					<lightning-layout-item size="12">
+						<lightning-combobox
+							label={label.EX_TJD_SeikyushaKubun}
+							value={taishoJidoData.SeikyushaKubun}
+							data-id="SeikyushaKubun"
+							options={seikyushaKubunOptions}
+							onchange={changeInput}
+							disabled={taishoJidoData.isDisabled}
+							class="ex-text_normal"
+						>
+						</lightning-combobox>
+						<span class="ex-text-color_neutral">対象者が１８歳に達する日以降の者である場合、対象者自身が認定請求を行うか、対象者の代理人（父母等）が認定請求を行うか選択してください</span>
+					</lightning-layout-item>
+				</template>
+
+			<template lwc:if={isSiteModeSatoya}>
+				<lightning-layout-item size="12">
+					<lightning-combobox
+						label="対象児童等 令和5年度中 新規措置"
+						value={taishoJidoData.KonnendochuShinkiSochi}
+						data-id="KonnendochuShinkiSochi"
+						options={konnendochuShinkiSochiOption}
+						onchange={changeInput}
+						required
+						disabled={taishoJidoData.isDisabled}
+						class="ex-text_normal"
+					>
+					</lightning-combobox>
+				</lightning-layout-item>
+				<lightning-layout-item size="12">
+					<lightning-input
+						type="text"
+						label="対象児童 備考（令和5年度中の措置解除予定等）"
+						value={taishoJidoData.Biko}
+						data-id="Biko"
+						onchange={changeInput}
+						max-length="255"
+						placeholder="令和6年2月15日に措置解除予定"
+						disabled={taishoJidoData.isDisabled}
+					>
+					</lightning-input>
+				</lightning-layout-item>
+			</template>
+
+			<template lwc:else>
+				<lightning-layout-item size="12">
+					<lightning-radio-group
+						type="radio"
+						label="対象者の国籍"
+						value={taishoJidoData.Kokuseki}
+						data-id="Kokuseki"
+						options={kokusekiOptions}
+						onchange={changeInput}
+						required
+						disabled={taishoJidoData.isDisabled}
+					>
+					</lightning-radio-group>
+				</lightning-layout-item>
+
+				<lightning-layout-item size="12">
+					<!-- 同居種別 -->
+					<lightning-radio-group
+						type="radio"
+						label={label.EX_TJD_DoukyoShubetsu}
+						options={seikyushaShubetsuOptions}
+						value={taishoJidoData.SeikyushaDoukyoShubetsu}
+						data-id="SeikyushaDoukyoShubetsu"
+						onchange={changeDoukyoShubetsu}
+						required
+						disabled={taishoJidoData.isDisabled}
+					>
+					</lightning-radio-group>
+				</lightning-layout-item>
+
+				<template lwc:if={isDoukyoShubetsuBekkyo}>
+					<lightning-layout-item size="12">
+						<!-- 住所 -->
+						<c-ex-jusho-form
+							yubin-bango={taishoJidoData.YubinBangou}
+							jusho={taishoJidoData.Jusho}
+							is-jusho-search-success={isJushoSearchSuccess}
+							onchangejusho={changeJusho}
+							yubin-bango-disabled={taishoJidoData.isDisabled}
+							jusho-disabled={taishoJidoData.isDisabled}
+						></c-ex-jusho-form>
+					</lightning-layout-item>
+				</template>
+
+				<!-- 続柄 -->
+				<template lwc:if={isNotDoukyoShubetsuHonnin}>
+					<lightning-layout-item size="12">
+						<lightning-radio-group
+							type="radio"
+							label={label.EX_TJD_Tsudukigara}
+							options={seikyushaTsudukigaraOptions}
+							value={taishoJidoData.SeikyushaTsudukigara}
+							data-id="SeikyushaTsudukigara"
+							onchange={changeInput}
+							required
+							disabled={taishoJidoData.isDisabled}
+						>
+						</lightning-radio-group>
+					</lightning-layout-item>
+					<template lwc:if={isTsudukigaraSonota}>
+						<lightning-layout-item size="12">
+							<lightning-input
+								type="text"
+								label={taishoJidoLbl.SonotaShousai__c}
+								value={taishoJidoData.SonotaShousai}
+								data-id="SonotaShousai"
+								onchange={changeInput}
+								max-length="255"
+								placeholder="祖父"
+								required
+								disabled={taishoJidoData.isDisabled}
+							>
+							</lightning-input>
+						</lightning-layout-item>
+					</template>
+				</template>
+
+				<!-- その他の情報 -->
+				<lightning-layout-item size="12">
+					<div class="slds-text-align_center ex-text-heading_medium ex-text-color_brand">都内在住状況の確認</div>
+				</lightning-layout-item>
+
+				<lightning-layout-item size="12">
+					<p>都内在住状況の確認は任意項目です。該当しない方は、「次へ進む」を選択してください。次に該当する方のみご入力ください。</p>
+					<p>・令和5年（2023年）4月以降に都外から転入（東京都に引っ越し）された方</p>
+					<p>・令和5年（2023年）4月以降に生まれたお子様の申請をされる方</p>
+					<p>・令和6年（2024年）3月までに都外に転出（東京都以外に引っ越し）（予定）をされる方</p>
+				</lightning-layout-item>
+
+				<lightning-layout-item size="12">
+					<lightning-input
+						type="checkbox"
+						label={taishoJidoLbl.IsTochuTennyuShussei__c}
+						checked={taishoJidoData.IsTochuTennyuShussei}
+						data-id="IsTochuTennyuShussei"
+						onchange={changeInput}
+						disabled={taishoJidoData.isDisabled}
+						class="ex-input-checkbox"
+					>
+					</lightning-input>
+				</lightning-layout-item>
+				<template lwc:if={taishoJidoData.IsTochuTennyuShussei}>
+					<lightning-layout-item size="12">
+						<lightning-input
+							type="date"
+							label={taishoJidoLbl.TennyuShusseiDate__c}
+							value={taishoJidoData.TennyuShusseiDate}
+							data-id="TennyuShusseiDate"
+							onchange={changeInput}
+							placeholder="2023/10/01"
+							min="2023-04-01"
+							message-when-range-underflow="転入・出生日は令和5年(2023年)4月以降の場合のみ入力してください"
+							required
+							disabled={taishoJidoData.isDisabled}
+						>
+						</lightning-input>
+					</lightning-layout-item>
+					<lightning-layout-item size="12">
+						<lightning-input
+							type="text"
+							label={taishoJidoLbl.TennyuShusseiDateSonota__c}
+							value={taishoJidoData.TennyuShusseiDateSonota}
+							data-id="TennyuShusseiDateSonota"
+							onchange={changeInput}
+							placeholder="2回目：○○○○/○○/○○、3回目：○○○○/○○/○○..."
+							max-length="255"
+							disabled={taishoJidoData.isDisabled}
+						>
+						</lightning-input>
+					</lightning-layout-item>
+				</template>
+
+				<lightning-layout-item size="12">
+					<lightning-input
+						type="checkbox"
+						label={taishoJidoLbl.IsTochuTenshutsu__c}
+						checked={taishoJidoData.IsTochuTenshutsu}
+						data-id="IsTochuTenshutsu"
+						onchange={changeInput}
+						disabled={taishoJidoData.isDisabled}
+						class="ex-input-checkbox"
+					>
+					</lightning-input>
+				</lightning-layout-item>
+				<template lwc:if={taishoJidoData.IsTochuTenshutsu}>
+					<lightning-layout-item size="12">
+						<lightning-input
+							type="date"
+							label={taishoJidoLbl.TenshutsuDate__c}
+							value={taishoJidoData.TenshutsuDate}
+							data-id="TenshutsuDate"
+							onchange={changeInput}
+							placeholder="2024/01/01"
+							min="2023-04-01"
+							message-when-range-underflow="転出(予定)日は令和5年(2023年)4月以降の場合のみ入力してください"
+							max="2024-03-31"
+							message-when-range-overflow="転出(予定)日は令和6年(2024年)3月までの場合のみ入力してください"
+							required
+							disabled={taishoJidoData.isDisabled}
+						>
+						</lightning-input>
+					</lightning-layout-item>
+					<lightning-layout-item size="12">
+						<lightning-input
+							type="text"
+							label={taishoJidoLbl.TenshutsuDateSonota__c}
+							value={taishoJidoData.TenshutsuDateSonota}
+							data-id="TenshutsuDateSonota"
+							onchange={changeInput}
+							placeholder="2回目：○○○○/○○/○○、3回目：○○○○/○○/○○..."
+							max-length="255"
+							disabled={taishoJidoData.isDisabled}
+						>
+						</lightning-input>
+					</lightning-layout-item>
+				</template>
+			</template>
+
+			<lightning-layout-item size="12" lwc:if={isSiteModeSatoya}>
+				※対象児童等が令和５年度中に措置解除となる場合は、措置解除予定日を記入してください。措置解除後、都外に在住する場合はその旨も記載してください。
+			</lightning-layout-item>
+			<lightning-layout-item size="12" lwc:else>
+				※申請時点で転出予定について申告がなかった場合や、申告した期間が実際より短かった場合、都外に在住していた期間分については返還していただきます。
+			</lightning-layout-item>
+		</lightning-layout>
+
+		<div class="slds-p-top_large">
+			<c-ex-footer
+				has-back
+				has-next
+				back-label="一覧へ戻る"
+				is-next-disabled={isNextDisabled}
+				onback={goList}
+				onnext={goNext}
+			></c-ex-footer>
+		</div>
+	</template>
+</template>

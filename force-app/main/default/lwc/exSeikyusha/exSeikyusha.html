@@ -1,0 +1,219 @@
+<template>
+	<template lwc:if={isLoading}>
+		<lightning-spinner size="large"></lightning-spinner>
+	</template>
+	<template lwc:else>
+		<div class="slds-text-align_center">
+			<div class="ex-text-heading_large ex-text-color_brand"><template lwc:if={isSiteModeSatoya}>認定請求援助者</template><template lwc:else>申請者</template>情報の登録</div>
+			<div class="slds-var-m-top_medium">
+				<p><template lwc:if={isSiteModeSatoya}>認定請求援助者</template><template lwc:else>申請者</template>の情報を入力してください。</p>
+			</div>
+			<div class="slds-var-m-top_small">
+				<p class="ex-text-color_destructive ex-text_bold">*必須項目です。</p>
+			</div>
+		</div>
+
+		<lightning-layout multiple-rows="true">
+			<lightning-layout-item size="12" class="slds-var-m-top_large">
+				<div class="slds-text-align_center ex-text-heading_medium ex-text-color_brand"><template lwc:if={isSiteModeSatoya}>認定請求援助者</template><template lwc:else>申請者</template>情報</div>
+
+				<lightning-layout  multiple-rows="true" class="ex-layout-m-vertical_medium">
+					<lightning-layout-item size="12" lwc:if={isSiteModeSatoya}>
+						<lightning-combobox
+							label="種類"
+							value={seikyushaData.ShisetsuShurui}
+							data-id="ShisetsuShurui"
+							options={shisetsuShuruiOptions}
+							placeholder=""
+							onchange={changeInput}
+							disabled={seikyushaData.isDisabled}
+							required
+							class="ex-text_normal"
+						>
+						</lightning-combobox>
+					</lightning-layout-item>
+
+					<lightning-layout-item size="12">
+						<lightning-input
+							type="text"
+							label={shimeiLbl}
+							value={seikyushaData.Shimei}
+							data-id="Shimei"
+							onchange={changeInput}
+							onblur={blurInputFullSpace}
+							max-length="255"
+							placeholder="東京　都民"
+							pattern="^(?=.*　)(?!.* ).*$"
+							message-when-pattern-mismatch="空欄(全角)を必ず含め、空欄(半角)は利用しないでください"
+							required
+							disabled={isEditableMyNumberColumn}
+						>
+						</lightning-input>
+						<p class="ex-text-color_neutral">姓と名の間は空欄(全角)を入れてご入力ください</p>
+						<p class="ex-text-color_neutral">姓と名の区切りがない場合は、末尾にスペースをご入力ください</p>
+					</lightning-layout-item>
+					<lightning-layout-item size="12">
+						<lightning-input
+							type="text"
+							label={shimeiFuriganaLbl}
+							value={seikyushaData.ShimeiFurigana}
+							data-id="ShimeiFurigana"
+							onchange={changeInput}
+							onblur={blurInputFullSpace}
+							max-length="255"
+							placeholder="トウキョウ　トミン"
+							pattern="^(?=.*　)(?!.* )[　ーァ-ヺ]*$"
+							message-when-pattern-mismatch="全角カナ、空欄(全角)のみ利用可能です。また、空欄(全角)を必ず含んでください。"
+							disabled={seikyushaData.isDisabled}
+						>
+						</lightning-input>
+						<p class="ex-text-color_neutral">全角カナで、姓と名の間は空欄(全角)を入れてご入力ください</p>
+						<p class="ex-text-color_neutral">姓と名の区切りがない場合は、末尾にスペースをご入力ください</p>
+					</lightning-layout-item>
+
+					<lightning-layout-item size="12">
+						<lightning-input
+							type="date"
+							label={seikyushaLbl.SeinenGappiDate__c}
+							value={seikyushaData.SeinenGappiDate}
+							data-id="SeinenGappiDate"
+							onchange={changeInput}
+							max-length="10"
+							placeholder="1970/01/01"
+							required
+							disabled={isEditableMyNumberColumn}
+						>
+						</lightning-input>
+						<p>ご利用の機種やOSによっては、カレンダーの表示が異なります</p>
+						<p>年月が表示されている部分を押していただくことで、年や月単位での選択が可能な場合がございます</p>
+					</lightning-layout-item>
+
+					<lightning-layout-item size="12" lwc:if={isNotSelectedSatoya}>
+						<lightning-input
+							type="text"
+							label="ファミリーホーム名称"
+							value={seikyushaData.ShisetsuMeisho}
+							data-id="ShisetsuMeisho"
+							onchange={changeInput}
+							max-length="255"
+							placeholder="東京児童養護施設"
+							disabled={seikyushaData.isDisabled}
+						>
+						</lightning-input>
+					</lightning-layout-item>
+
+					<lightning-layout-item size="12">
+						<c-ex-jusho-form
+							yubin-bango={seikyushaData.YubinBangou}
+							jusho={seikyushaData.Jusho}
+							onchangejusho={changeJusho}
+							yubin-bango-label={yubinBangoLbl}
+							jusho-label={jushoLbl}
+							yubin-bango-disabled={seikyushaData.isDisabled}
+							jusho-disabled={isEditableMyNumberColumn}
+							is-jusho-search-success={isJushoSearchSuccess}
+						></c-ex-jusho-form>
+					</lightning-layout-item>
+
+					<lightning-layout-item size="12">
+						<lightning-input
+							type="tel"
+							label={seikyushaLbl.DenwaBangou__c}
+							value={seikyushaData.DenwaBangou}
+							data-id="DenwaBangou"
+							onchange={changeInput}
+							max-length="40"
+							placeholder="012-3456-7890"
+							pattern="^[0-9\-]+$"
+							message-when-pattern-mismatch="半角数字、半角ハイフン(-)のみで入力してください。"
+							required
+							disabled={seikyushaData.isDisabled}
+						>
+						</lightning-input>
+					</lightning-layout-item>
+
+					<lightning-layout-item size="12">
+						<div>
+							<label class="slds-form-element__label slds-no-flex">{seikyushaLbl.MailAddress__c}</label>
+							<div class="slds-var-m-top_xxx-small ex-text-color_neutral">
+								<p>{seikyushaData.MailAddress}</p>
+							</div>
+						</div>
+					</lightning-layout-item>
+				</lightning-layout>
+			</lightning-layout-item>
+
+			<lightning-layout-item size="12" class="slds-var-m-top_large" if:false={isSiteModeSatoya}>
+				<div class="slds-text-align_center ex-text-heading_medium ex-text-color_brand">申請者の口座情報</div>
+				<div class="slds-var-m-top_medium ex-text-heading_small">
+					<p><strong>給付金の振込先は、申請者の名義の口座か対象者(子供)の名義の口座を選ぶことができます。</strong></p>
+					<p><strong>申請者名義の口座への振込を希望する場合には、以下の振込口座欄に記入してください。</strong></p>
+					<p class="slds-m-top_small ex-text-underline"><strong>対象者(子供)名義の口座を指定する場合は、入力せずに「次へ進む」を押してください。</strong></p>
+					<p lwc:if={isSiteModeIppan} class="slds-m-top_small">18歳の対象者本人による申請の場合、こちらの画面で口座情報を入力してください。</p>
+				</div>
+
+				<div class="slds-text-align_center slds-m-top_large">
+					東京都からの支払金については、<br>
+					下記の預金口座に振り込んでください。
+				</div>
+
+				<div class="slds-m-top_large">
+					<c-ex-koza-form
+						kfw={seikyushaData.kfw}
+						is-disabled={seikyushaData.isDisabled}
+					></c-ex-koza-form>
+				</div>
+
+				<div class="slds-text-align_center ex-text-heading_medium slds-m-bottom_small slds-m-top_large">
+					振込口座確認書類アップロード
+				</div>
+
+				<div class="slds-m-top_medium slds-m-bottom_medium">
+					受取口座を確認できる書類として金融機関名、支店名、店番号、預金の種別、口座番号、口座名義（カタカナの名義含む）がわかるものをご提出ください。
+				</div>
+				<div class="slds-text-align_center ex-text-heading_small ex-text_bold slds-m-bottom_small">
+					通帳、WEB通帳、キャッシュカードなど
+				</div>
+				<lightning-layout class="slds-m-bottom_small">
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<img src={imgSample1}>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<img src={imgSample2}>
+					</lightning-layout-item>
+					<lightning-layout-item size="4" class="slds-p-around_small">
+						<img src={imgSample3}>
+					</lightning-layout-item>
+				</lightning-layout>
+				<div class="slds-m-bottom_medium">
+					<p>※WEB通帳・ネットバンキングの場合は、画面のスクリーンショット画像をアップロードしてください。</p>
+				</div>
+				<div class="slds-m-bottom_medium">
+					<p>※キャッシュカードの場合は、カード表面の画像をアップロードしてください。</p>
+					<p>　また、クレジットカード一体型のキャッシュカードの場合、クレジットカード番号はマスキングしてください。</p>
+				</div>
+
+				<div>
+					<c-ex-file-kit
+						options={seikyushaData.KozaOption}
+						record-id={seikyushaData.Id}
+						file-list={kozaShoruiList}
+						un-deletable={seikyushaData.isDisabled}
+						is-option-hidden
+						onfileupload={handleKozaUploaded}
+						onfiledelete={handleKozaDeleted}
+					></c-ex-file-kit>
+				</div>
+			</lightning-layout-item>
+		</lightning-layout>
+
+		<div class="slds-p-top_large">
+			<c-ex-footer
+				has-back
+				has-next
+				onback={goBack}
+				onnext={goNext}
+			></c-ex-footer>
+		</div>
+	</template>
+</template>

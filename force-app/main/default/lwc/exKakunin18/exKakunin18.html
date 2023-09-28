@@ -1,0 +1,83 @@
+<template>
+    <lightning-spinner lwc:if={isLoading} size="large"></lightning-spinner>
+    <div lwc:else>
+        <div class="slds-text-align_center">
+            <div class="ex-text-heading_large ex-text-color_brand">対象者の年齢確認</div>
+
+            <div class="slds-var-m-top_small">
+                <p>申請日時点での対象者(子供)の年齢を選択してください。</p>
+            </div>
+        </div>
+
+        <div class="slds-var-m-top_small">
+            <div class="ex-box ex-box_theme">
+                <div class="ex-radio-group ex-kakunin-18-radio-group">
+                    <fieldset class="slds-form-element">
+                        <div class="slds-form-element__label">
+                            <abbr class="slds-required" title="required">*</abbr>
+                            <span>対象者(子供)の年齢</span>
+                        </div>
+                        <div class="slds-form-element__control">
+                            <span class="slds-radio">
+                                <input
+                                    type="radio"
+                                    id="includeNot18"
+                                    value="includeNot18"
+                                    checked={checkedIncludeNot18}
+                                    onchange={onchangeRadio}
+                                    disabled={isEditDisabled}
+                                />
+                                <label class="slds-radio__label" for="includeNot18">
+                                    <span class="slds-radio_faux"></span>
+                                    <div class="slds-form-element__label">
+                                        <p class="ex-text-heading_small">
+                                            すべての対象者(子供)が
+                                            <span class="ex-text_bold">18歳未満</span>
+                                            である
+                                        </p>
+                                    </div>
+                                </label>
+                            </span>
+                            <span class="slds-radio">
+                                <input
+                                    type="radio"
+                                    id="include18"
+                                    value="include18"
+                                    checked={checkedInclude18}
+                                    onchange={onchangeRadio}
+                                    disabled={isEditDisabled}
+                                />
+                                <label class="slds-radio__label" for="include18">
+                                    <span class="slds-radio_faux"></span>
+                                    <div class="slds-form-element__label">
+                                        <p class="ex-text-heading_small">
+                                            <span class="ex-text_bold">18歳</span>
+                                            の対象者(子供)が1名以上いる
+                                        </p>
+                                        <p>※18歳の方ご本人が申請する場合もこちらを選択</p>
+                                    </div>
+                                </label>
+                            </span>
+                        </div>
+                    </fieldset>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="slds-var-m-top_small">
+            <p>※18歳未満とは、18歳に達する日(18歳の誕生日の前日)より前であることをいいます。</p>
+            <p>※2005年4月1日以前の生まれの方は対象外です。</p>
+        </div>
+
+        <div class="slds-var-m-top_large">
+            <c-ex-footer
+                has-back
+                has-next
+                is-next-disabled={isNextDisabled}
+                onback={goBack}
+                onnext={goNext}
+            ></c-ex-footer>
+        </div>
+    </div>
+</template>

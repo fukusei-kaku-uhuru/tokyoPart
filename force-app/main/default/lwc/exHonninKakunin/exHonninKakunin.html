@@ -1,0 +1,131 @@
+<template>
+	<lightning-spinner lwc:if={isLoading} size="large"></lightning-spinner>
+	<div lwc:else>
+		<div class="slds-text-align_center ex-text-heading_large ex-text-color_brand">本人確認方法の選択</div>
+
+		<template lwc:if={approvedByMyNumber}>
+			<div class="slds-text-align_center slds-var-m-top_small">
+				マイナンバー認証済みです。
+			</div>
+		</template>
+		<template lwc:elseif={approvedByFileUpload}>
+			<div class="slds-text-align_center slds-var-m-top_small">
+				券面アップロード済みです。
+			</div>
+		</template>
+		<template lwc:else>
+			<div class="slds-text-align_center slds-var-m-top_small">
+				<p><template lwc:if={isSiteModeSatoya}>認定請求援助者</template><template lwc:else>申請者</template>の本人確認が必要です。</p>
+				<p lwc:if={isNotSiteModeDv}>以下の2つの方法よりお選びください。</p>
+			</div>
+
+			<div lwc:if={isNotSiteModeDv} class="slds-var-m-top_large">
+				<div class="ex-box ex-box_brand">
+					<div class="slds-grid slds-wrap slds-grid_align-center">
+						<div class="slds-col slds-size_10-of-12 slds-text-align_center ex-text-heading_medium">
+							<div class="ex-text-color_brand">方法1</div>
+							<div>公的個人認証を使った本人確認</div>
+						</div>
+					</div>
+
+					<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+						<div class="slds-col slds-size_11-of-12">
+							<div class="slds-grid slds-wrap slds-grid_align-center">
+								<img src={ImgExTrustDock} class="slds-col slds-size_7-of-12">
+							</div>
+						</div>
+					</div>
+
+					<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+						<div class="slds-col slds-size_11-of-12">
+							<p>お手持ちのスマートフォンでマイナンバーカードを読み取り、氏名、住所、生年月日、有効期限を取得することで本人確認を行います。</p>
+							<p class="ex-text-color_destructive ex-text_bold ex-text-underline">
+								<template lwc:if={isNotSiteModeSatoya}>
+									※公的個人認証を行うことで、マイナンバーカード１枚のみで本人確認が完了し、この後の申請者情報の入力も一部自動で入力可能となりますのでオススメです！
+								</template>
+								<template lwc:else>
+									※公的個人認証を行うことで、この後の認定請求援助者（里親）の情報の入力が一部自動でできますのでオススメです！
+								</template>
+							</p>
+						</div>
+					</div>
+
+					<div class="slds-var-m-top_large slds-grid slds-wrap slds-grid_align-center">
+						<div class="slds-col slds-size_11-of-12">
+							<p><strong>※申請者（保護者等）のマイナンバーカードを使用してください。</strong></p>
+							<p><strong>（対象者（子供）のマイナンバーカードは使用できません。）</strong></p>
+							<p>※マイナンバーは取得しません。</p>
+							<p>※パソコンで申請手続きを行っている場合は、画面に表示されるニ次元バーコードをスマートフォンで読み取り、スマートフォンで認証を行ってください。</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="slds-var-m-top_large">
+				<div class="ex-box ex-box_brand">
+					<div class="slds-grid slds-wrap slds-grid_align-center">
+						<div class="slds-col slds-size_10-of-12 slds-text-align_center ex-text-heading_medium">
+							<div lwc:if={isNotSiteModeDv} class="ex-text-color_brand">方法2</div>
+							<div lwc:else class="ex-text-color_brand">方法</div>
+							<div>券面アップロードによる本人確認</div>
+						</div>
+					</div>
+
+					<div class="slds-var-m-top_small slds-grid slds-wrap slds-grid_align-center">
+						<div class="slds-col slds-size_11-of-12">
+							<div class="slds-grid slds-wrap slds-grid_align-center">
+								<img src={ImgExFileUpload} class="slds-col slds-size_full">
+							</div>
+						</div>
+					</div>
+
+					<div class="slds-var-m-top_x-small slds-grid slds-wrap slds-grid_align-center">
+						<div class="slds-col slds-size_11-of-12">
+							<p>
+								あらかじめ準備しておいた本人確認書類（<template lwc:if={isSiteModeSatoya}>一</template><template lwc:else>二</template>点）の画像をアップロードします。書類に個人番号や保険者番号等の記載がある場合には、マスキング（見えないように処理）が必要になります。
+							</p>
+						</div>
+					</div>
+
+					<div lwc:if={isNotSiteModeDv} class="slds-var-m-top_x-small slds-grid slds-wrap slds-grid_align-center">
+						<div class="slds-col slds-size_11-of-12">
+							<p>※スマホにNFC機能がない場合や、アプリを導入できない場合もこの方法で申請してください。</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="slds-var-m-top_large">
+				<div class="ex-box ex-box_theme">
+					<lightning-radio-group
+						label="本人確認方法"
+						options={approvedByOptions}
+						value={approvedBy}
+						onchange={changeApprovedBy}
+						required
+						class="ex-radio-group ex-radio-group_small"
+					></lightning-radio-group>
+				</div>
+			</div>
+		</template>
+
+		<div lwc:if={canReUpload} class="slds-grid slds-wrap slds-grid_align-space slds-m-top_small">
+			<div class="slds-col slds-size_10-of-12 slds-large-size_5-of-12 slds-order_2 slds-large-order_1">
+				<button
+					onclick={reUpload}
+					class="slds-button slds-size_full slds-var-p-vertical_small slds-var-p-horizontal_large ex-button_outline"
+				>本人確認方法修正</button>
+			</div>
+		</div>
+
+		<div class="slds-var-m-top_large">
+			<c-ex-footer
+				has-back
+				has-next
+				onback={goBack}
+				onnext={goNext}
+			></c-ex-footer>
+		</div>
+
+	</div>
+</template>

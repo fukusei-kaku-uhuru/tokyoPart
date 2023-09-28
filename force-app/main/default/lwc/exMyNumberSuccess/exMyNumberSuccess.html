@@ -1,0 +1,26 @@
+<template>
+    <div class="slds-text-align_center">
+        <div class="ex-text-heading_large ex-text-color_brand">公的個人認証を使った本人確認</div>
+
+        <div class="slds-var-m-top_large">
+            <lightning-icon
+                alternative-text="認証完了"
+                icon-name="action:approval"
+                size="xx-small"
+                title="認証完了"
+                class="ex-my-number-success-icon"
+            ></lightning-icon>
+        </div>
+
+        <div class="slds-var-m-top_small">
+            <p class="ex-text-heading_medium">認証が完了しました</p>
+        </div>
+    </div>
+
+    <div class="slds-var-m-top_large">
+        <c-ex-footer
+            has-next
+            onnext={goNext}
+        ></c-ex-footer>
+    </div>
+</template>

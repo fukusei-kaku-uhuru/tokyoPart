@@ -1,0 +1,60 @@
+<template>
+    <lightning-modal-body>
+		<div class="slds-var-p-around_small">
+			<p class="ex-text-heading_small slds-m-bottom_medium"><strong>公的個人認証には、下記の準備が必要です。</strong></p>
+
+			<p class="ex-text-heading_small slds-m-bottom_xxx-small"><strong>● マイナンバーカードの署名用電子証明書のパスワード（６～１６桁の英数字）</strong></p>
+			<p>ご準備いただけない場合は、公的個人認証はご利用頂けません。</p>
+			<p>パスワードをご確認頂くか、券面アップロードによる本人確認をご利用ください。</p>
+
+			<p class="ex-text-heading_small slds-m-bottom_xxx-small slds-m-top_medium"><strong>●「TRUSTDOCK」アプリのインストール</strong></p>
+			<p>
+				Androidの方は
+				<a class="ex-text-link" href={urlTrustdockAndroid} target="_blank" tabindex="-1">こちら</a>
+			</p>
+			<p>
+				iPhone/iPadの方は
+				<a class="ex-text-link" href={urlTrustdockApple} target="_blank" tabindex="-1">こちら</a>
+			</p>
+			<p>からインストールしてください。</p>
+
+			<p class="slds-m-top_small">準備が完了したら「OK」ボタンを押して公的個人認証へ進んでください。</p>
+
+			<div class="slds-var-m-top_large slds-text-align_center">
+
+				<!-- モバイル時表示 -->
+				<lightning-layout class="slds-hide_medium">
+					<lightning-layout-item size="3"></lightning-layout-item>
+					<lightning-layout-item size="6">
+						<button
+							onclick={handleCancel}
+							class="slds-button slds-var-p-horizontal_medium ex-button_back"
+						>キャンセル</button>
+					</lightning-layout-item>
+					<lightning-layout-item size="3">
+						<button
+							onclick={handleOk}
+							class="slds-button slds-var-p-horizontal_medium ex-button_next"
+						>OK</button>
+					</lightning-layout-item>
+				</lightning-layout>
+
+				<!-- PC時表示 -->
+				<lightning-layout class="slds-show_medium">
+					<lightning-layout-item size="6" class="slds-var-p-horizontal_small">
+						<button
+							onclick={handleCancel}
+							class="slds-button slds-size_full slds-var-p-vertical_xx-small ex-button_back"
+						>キャンセル</button>
+					</lightning-layout-item>
+					<lightning-layout-item size="6" class="slds-var-p-horizontal_small">
+						<button
+							onclick={handleOk}
+							class="slds-button slds-size_full slds-var-p-vertical_xx-small ex-button_next"
+						>OK</button>
+					</lightning-layout-item>
+				</lightning-layout>
+			</div>
+		</div>
+	</lightning-modal-body>
+</template>

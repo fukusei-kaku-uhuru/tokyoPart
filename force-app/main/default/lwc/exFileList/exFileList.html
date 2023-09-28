@@ -1,0 +1,39 @@
+<template>
+    <template lwc:if={hasViewFiles}>
+
+        <template lwc:if={hiddenHeader}></template>
+        <template lwc:else>
+            <div class="ex-text_bold">アップロード済み書類</div>
+        </template>
+        <div class={headerClass}>
+            <template for:each={viewFileList} for:item="file" for:index="idx">
+                <div class="slds-var-m-top_x-small slds-grid slds-grid_vertical-align-center" key={file.contentVersionId}>
+                    <div class="slds-col slds-size_5-of-12 slds-var-p-right_small ex-file-list-word-wrap">
+                        <p>
+                            <span onclick={navigateToFiles}
+                            data-content-document-id={file.contentDocumentId}
+                            data-content-version-id={file.contentVersionId}
+                            class="ex-text-link">{file.fileName}</span>
+                        </p>
+                    </div>
+                    <div class="slds-col slds-size_6-of-12 slds-var-p-right_xx-small">
+                        {file.fileTeigiName}
+                    </div>
+                    <div lwc:if={file.isDeletable} class="slds-col slds-size_1-of-12">
+                        <div class="slds-grid slds-grid_align-end">
+                            <lightning-button-icon
+                                alternative-text="削除"
+                                icon-name="utility:close"
+                                size="x-small"
+                                title="削除"
+                                onclick={onclickDelete}
+                                data-content-document-id={file.contentDocumentId}
+                                class="slds-col ex-button-icon"
+                            ></lightning-button-icon>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </template>
+</template>
